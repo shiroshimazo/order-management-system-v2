@@ -1,0 +1,154 @@
+/* ============================================================
+   login.css — Login Dashboard Styles
+   Location: src/main/resources/ordermanagementsystem/css/login.css
+   ============================================================ */
+
+/* Root / Background */
+.login-root {
+    -fx-background-color: #f7f7f7;
+}
+
+/* Card container */
+.login-card {
+    -fx-background-color: #FDFDFD;
+    -fx-background-radius: 16;
+    -fx-border-color: #e8e8e8;
+    -fx-border-width: 1;
+    -fx-border-radius: 16;
+    -fx-padding: 48 40 48 40;
+}
+
+/* ── Heading section ── */
+.heading-box {
+    -fx-padding: 0 0 32 0;
+}
+
+.login-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #000000;
+}
+
+.login-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #999999;
+}
+
+/* ── Field labels ── */
+.field-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #444444;
+}
+
+/* ── Field wrappers (username / password) ── */
+.field-box-username {
+    -fx-padding: 0 0 16 0;
+}
+
+.field-box-password {
+    -fx-padding: 0 0 18 0;
+}
+
+/* Input row (HBox wrapping icon + field) */
+.input-row {
+    -fx-background-color: #fafafa;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 0 12 0 12;
+}
+
+/* Input row — hover effect */
+.input-row:hover {
+    -fx-border-color: #D92A1C;
+    -fx-border-width: 1.5;
+}
+
+/* Password input row — highlighted border */
+.input-row-error {
+    -fx-background-color: #fafafa;
+    -fx-border-color: #D92A1C;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 0 12 0 12;
+}
+
+/* Password input row — hover effect */
+.input-row-error:hover {
+    -fx-border-color: #b01e12;
+    -fx-border-width: 2;
+}
+
+/* Text fields inside rows */
+.input-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 0 0 0 8;
+    -fx-font-size: 13px;
+    -fx-text-fill: #000000;
+    -fx-prompt-text-fill: #cccccc;
+}
+
+/* ── Toggle icon (eye) ── */
+.toggle-icon {
+    -fx-cursor: hand;
+    -fx-padding: 0 2 0 6;
+}
+
+/* ── Forgot password row ── */
+.forgot-box {
+    -fx-padding: 0 0 24 0;
+}
+
+.forgot-link {
+    -fx-font-size: 12px;
+    -fx-text-fill: #D92A1C;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+/* ── Sign-in button ── */
+.login-button {
+    -fx-background-color: #D92A1C;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+
+/* ── Divider "or" section ── */
+.divider-box {
+    -fx-padding: 0 0 18 0;
+}
+
+.divider-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #cccccc;
+}
+
+/* ── Create account row ── */
+.no-account-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #999999;
+}
+
+.create-account-link {
+    -fx-font-size: 12px;
+    -fx-text-fill: #D92A1C;
+    -fx-font-weight: bold;
+    -fx-border-color: transparent;
+    -fx-padding: 0 0 0 2;
+}
+
+/* ── Error label ── */
+.error-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #D92A1C;
+    -fx-padding: 10 0 8 0;
+}
