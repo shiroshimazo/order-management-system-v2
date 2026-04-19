@@ -8,6 +8,7 @@ module com.shiro.ordermanagementsystem {
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
     requires jbcrypt;
+    requires jakarta.mail;
 
     opens com.shiro.ordermanagementsystem to javafx.graphics;
     opens com.shiro.ordermanagementsystem.Controller to javafx.fxml;

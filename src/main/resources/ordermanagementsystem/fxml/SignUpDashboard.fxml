@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.shiro.ordermanagementsystem.Controller.SignUpDashboardController"
+           prefWidth="420"
+           prefHeight="880"
+           styleClass="signup-root"
+           stylesheets="@../css/login.css">
+
+    <VBox alignment="TOP_LEFT"
+          prefWidth="420"
+          maxWidth="420"
+          minWidth="420"
+          styleClass="login-card">
+
+        <!-- Heading -->
+        <VBox spacing="6" styleClass="heading-box">
+            <Label text="Create Account" styleClass="login-title" />
+            <Label text="Join us and start ordering" styleClass="login-subtitle" />
+        </VBox>
+
+        <!-- Username Field -->
+        <VBox spacing="6" styleClass="field-box">
+            <Label text="Username" styleClass="field-label" />
+            <HBox alignment="CENTER_LEFT"
+                  spacing="0"
+                  prefHeight="44"
+                  styleClass="input-row">
+                <FontIcon iconLiteral="far-user"
+                          iconSize="14"
+                          iconColor="#bbbbbb" />
+                <TextField fx:id="usernameField"
+                           promptText="Choose a username"
+                           prefHeight="44"
+                           HBox.hgrow="ALWAYS"
+                           styleClass="input-field" />
+            </HBox>
+        </VBox>
+
+        <!-- Full Name Field -->
+        <VBox spacing="6" styleClass="field-box">
+            <Label text="Full Name" styleClass="field-label" />
+            <HBox alignment="CENTER_LEFT"
+                  spacing="0"
+                  prefHeight="44"
+                  styleClass="input-row">
+                <FontIcon iconLiteral="far-id-card"
+                          iconSize="14"
+                          iconColor="#bbbbbb" />
+                <TextField fx:id="fullNameField"
+                           promptText="Enter your full name"
+                           prefHeight="44"
+                           HBox.hgrow="ALWAYS"
+                           styleClass="input-field" />
+            </HBox>
+        </VBox>
+
+        <!-- Email Field -->
+        <VBox spacing="6" styleClass="field-box">
+            <Label text="Email" styleClass="field-label" />
+            <HBox alignment="CENTER_LEFT"
+                  spacing="0"
+                  prefHeight="44"
+                  styleClass="input-row">
+                <FontIcon iconLiteral="far-envelope"
+                          iconSize="14"
+                          iconColor="#bbbbbb" />
+                <TextField fx:id="emailField"
+                           promptText="you@example.com"
+                           prefHeight="44"
+                           HBox.hgrow="ALWAYS"
+                           styleClass="input-field" />
+            </HBox>
+        </VBox>
+
+        <!-- Phone Number Field -->
+        <VBox spacing="6" styleClass="field-box">
+            <Label text="Phone Number" styleClass="field-label" />
+            <HBox alignment="CENTER_LEFT"
+                  spacing="0"
+                  prefHeight="44"
+                  styleClass="input-row">
+                <FontIcon iconLiteral="fas-phone"
+                          iconSize="14"
+                          iconColor="#bbbbbb" />
+                <TextField fx:id="phoneField"
+                           promptText="+63 9XX XXX XXXX"
+                           prefHeight="44"
+                           HBox.hgrow="ALWAYS"
+                           styleClass="input-field" />
+            </HBox>
+        </VBox>
+
+        <!-- Password Field -->
+        <VBox spacing="6" styleClass="field-box">
+            <Label text="Password" styleClass="field-label" />
+            <HBox alignment="CENTER_LEFT"
+                  spacing="0"
+                  prefHeight="44"
+                  styleClass="input-row">
+                <FontIcon iconLiteral="fas-lock"
+                          iconSize="14"
+                          iconColor="#bbbbbb" />
+                <PasswordField fx:id="passwordField"
+                               promptText="••••••••"
+                               prefHeight="44"
+                               HBox.hgrow="ALWAYS"
+                               styleClass="input-field" />
+                <TextField fx:id="passwordVisible"
+                           promptText="••••••••"
+                           prefHeight="44"
+                           visible="false"
+                           managed="false"
+                           HBox.hgrow="ALWAYS"
+                           styleClass="input-field" />
+                <FontIcon fx:id="togglePasswordIcon"
+                          styleClass="toggle-icon"
+                          onMouseClicked="#togglePasswordVisibility" />
+            </HBox>
+        </VBox>
+
+        <!-- Confirm Password Field -->
+        <VBox spacing="6" styleClass="field-box">
+            <Label text="Confirm Password" styleClass="field-label" />
+            <HBox alignment="CENTER_LEFT"
+                  spacing="0"
+                  prefHeight="44"
+                  styleClass="input-row">
+                <FontIcon iconLiteral="fas-lock"
+                          iconSize="14"
+                          iconColor="#bbbbbb" />
+                <PasswordField fx:id="confirmPasswordField"
+                               promptText="••••••••"
+                               prefHeight="44"
+                               HBox.hgrow="ALWAYS"
+                               styleClass="input-field" />
+                <TextField fx:id="confirmPasswordVisible"
+                           promptText="••••••••"
+                           prefHeight="44"
+                           visible="false"
+                           managed="false"
+                           HBox.hgrow="ALWAYS"
+                           styleClass="input-field" />
+                <FontIcon fx:id="toggleConfirmIcon"
+                          styleClass="toggle-icon"
+                          onMouseClicked="#toggleConfirmPasswordVisibility" />
+            </HBox>
+        </VBox>
+
+        <!-- Error Label (space always reserved) -->
+        <Label fx:id="errorLabel"
+               text=""
+               wrapText="true"
+               maxWidth="Infinity"
+               minHeight="18"
+               styleClass="error-label" />
+
+        <!-- Create Account Button -->
+        <Button fx:id="createAccountButton"
+                text="Create Account"
+                onAction="#handleCreateAccount"
+                prefHeight="46"
+                maxWidth="Infinity"
+                styleClass="login-button" />
+
+        <Region prefHeight="20" />
+
+        <!-- Divider with OR -->
+        <HBox alignment="CENTER" spacing="10" styleClass="divider-box">
+            <Line endX="100"
+                  strokeWidth="0.5"
+                  stroke="#e0e0e0"
+                  HBox.hgrow="ALWAYS" />
+            <Label text="or" styleClass="divider-label" />
+            <Line endX="100"
+                  strokeWidth="0.5"
+                  stroke="#e0e0e0"
+                  HBox.hgrow="ALWAYS" />
+        </HBox>
+
+        <!-- Sign In link -->
+        <HBox alignment="CENTER" spacing="2">
+            <Label text="Already have an account?" styleClass="have-account-label" />
+            <Hyperlink text="Sign in"
+                       onAction="#handleGoToLogin"
+                       styleClass="signin-link" />
+        </HBox>
+
+    </VBox>
+
+</StackPane>

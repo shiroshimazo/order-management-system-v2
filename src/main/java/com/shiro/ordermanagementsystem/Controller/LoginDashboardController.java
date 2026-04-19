@@ -4,6 +4,7 @@ import com.shiro.ordermanagementsystem.User;
 import com.shiro.ordermanagementsystem.UserDAO;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -25,7 +26,6 @@ public class LoginDashboardController {
         toggleIcon.setIconSize(14);
         toggleIcon.setIconColor(javafx.scene.paint.Color.web("#aaaaaa"));
 
-        // Hide error label as soon as the user starts typing
         usernameField.textProperty().addListener((obs, oldVal, newVal) -> hideError());
         passwordField.textProperty().addListener((obs, oldVal, newVal) -> hideError());
         passwordVisible.textProperty().addListener((obs, oldVal, newVal) -> hideError());
@@ -62,29 +62,25 @@ public class LoginDashboardController {
                 ? passwordVisible.getText().trim()
                 : passwordField.getText().trim();
 
-        // 1. Empty field check
         if (username.isEmpty() || password.isEmpty()) {
             showError("Please enter your username and password.");
             return;
         }
 
-        // 2. Look up user in DB
         User user = UserDAO.findByUsername(username);
         if (user == null) {
             showError("Invalid username or password.");
             return;
         }
 
-        // 3. Verify BCrypt password
         if (!BCrypt.checkpw(password, user.getPassword())) {
             showError("Invalid username or password.");
             return;
         }
 
-        // 4. Route by role
         switch (user.getRole()) {
             case ADMIN    -> showAdminAuthPopup();
-            case CUSTOMER -> navigateTo("/ordermanagementsystem/fxml/CustomerHome.fxml");
+            case CUSTOMER -> navigateTo("/ordermanagementsystem/fxml/CustomerHome.fxml", 420, 660);
         }
     }
 
@@ -99,7 +95,7 @@ public class LoginDashboardController {
         );
         dialog.showAndWait().ifPresent(adminId -> {
             if (adminId.equals("ADMIN-001")) {
-                navigateTo("/ordermanagementsystem/fxml/AdminDashboard.fxml");
+                navigateTo("/ordermanagementsystem/fxml/AdminDashboard.fxml", 420, 660);
             } else {
                 showError("Invalid Admin ID. Access denied.");
             }
@@ -107,13 +103,18 @@ public class LoginDashboardController {
     }
 
     // ─── Navigation ───────────────────────────────────────────────────────────
-    private void navigateTo(String fxmlPath) {
+    private void navigateTo(String fxmlPath, double width, double height) {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
                     getClass().getResource(fxmlPath)
             );
             javafx.scene.Parent root = loader.load();
-            loginButton.getScene().setRoot(root);
+
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            stage.getScene().setRoot(root);
+            stage.setWidth(width);
+            stage.setHeight(height);
+            stage.centerOnScreen();
         } catch (Exception e) {
             showError("Navigation error: " + e.getMessage());
             e.printStackTrace();
@@ -123,13 +124,13 @@ public class LoginDashboardController {
     // ─── Forgot Password ──────────────────────────────────────────────────────
     @FXML
     private void handleForgotPassword() {
-        System.out.println("Forgot password clicked");
+        navigateTo("/ordermanagementsystem/fxml/ForgotPasswordDashboard.fxml", 420, 760);
     }
 
-    // ─── Create Account ───────────────────────────────────────────────────────
+    // ─── Create Account → SignUp form (420 × 880) ─────────────────────────────
     @FXML
     private void handleCreateAccount() {
-        System.out.println("Create account clicked");
+        navigateTo("/ordermanagementsystem/fxml/SignUpDashboard.fxml", 420, 880);
     }
 
     // ─── Show / Hide Error ────────────────────────────────────────────────────

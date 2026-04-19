@@ -10,16 +10,19 @@ public class User {
     private Role   role;
     private String fullName;
     private String email;
+    private String phone;
 
     public User() {}
 
-    public User(int id, String username, String password, Role role, String fullName, String email) {
+    public User(int id, String username, String password, Role role,
+                String fullName, String email, String phone) {
         this.id       = id;
         this.username = username;
         this.password = password;
         this.role     = role;
         this.fullName = fullName;
         this.email    = email;
+        this.phone    = phone;
     }
 
     // ── Getters ───────────────────────────────────────────────
@@ -29,6 +32,7 @@ public class User {
     public Role   getRole()     { return role; }
     public String getFullName() { return fullName; }
     public String getEmail()    { return email; }
+    public String getPhone()    { return phone; }
 
     // ── Setters ───────────────────────────────────────────────
     public void setId(int id)             { this.id = id; }
@@ -37,4 +41,5 @@ public class User {
     public void setRole(Role r)           { this.role = r; }
     public void setFullName(String name)  { this.fullName = name; }
     public void setEmail(String email)    { this.email = email; }
+    public void setPhone(String phone)    { this.phone = phone; }
 }

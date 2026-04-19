@@ -4,11 +4,21 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.scene.text.Font;
 
 public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        // Load SF Pro Display fonts (must come BEFORE FXMLLoader)
+        Font.loadFont(getClass().getResourceAsStream(
+                "/ordermanagementsystem/fonts/SF-Pro-Display-Regular.otf"), 13);
+        Font.loadFont(getClass().getResourceAsStream(
+                "/ordermanagementsystem/fonts/SF-Pro-Display-Medium.otf"), 13);
+        Font.loadFont(getClass().getResourceAsStream(
+                "/ordermanagementsystem/fonts/SF-Pro-Display-Bold.otf"), 13);
+
+        // ... rest of your existing code (FXMLLoader, Scene, stage.show, etc.)
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/ordermanagementsystem/fxml/LoginDashBoard.fxml")
         );

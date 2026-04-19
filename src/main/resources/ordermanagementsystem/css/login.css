@@ -1,14 +1,15 @@
 /* ============================================================
-   login.css — Login Dashboard Styles
+   login.css — Login & SignUp Dashboard Styles
    Location: src/main/resources/ordermanagementsystem/css/login.css
    ============================================================ */
 
-/* Root / Background */
-.login-root {
+/* Apply SF Pro Display globally to login + signup + forgot roots */
+.login-root, .signup-root, .forgot-root {
+    -fx-font-family: "SF Pro Display";
     -fx-background-color: #f7f7f7;
 }
 
-/* Card container */
+/* Card container (shared by login + signup) */
 .login-card {
     -fx-background-color: #FDFDFD;
     -fx-background-radius: 16;
@@ -24,30 +25,38 @@
 }
 
 .login-title {
+    -fx-font-family: "SF Pro Display";
     -fx-font-size: 26px;
     -fx-font-weight: bold;
     -fx-text-fill: #000000;
 }
 
 .login-subtitle {
+    -fx-font-family: "SF Pro Display";
     -fx-font-size: 13px;
     -fx-text-fill: #999999;
 }
 
 /* ── Field labels ── */
 .field-label {
+    -fx-font-family: "SF Pro Display";
     -fx-font-size: 12px;
     -fx-font-weight: bold;
     -fx-text-fill: #444444;
 }
 
-/* ── Field wrappers (username / password) ── */
+/* ── Field wrappers ── */
 .field-box-username {
     -fx-padding: 0 0 16 0;
 }
 
 .field-box-password {
     -fx-padding: 0 0 18 0;
+}
+
+/* Generic field wrapper for signup */
+.field-box {
+    -fx-padding: 0 0 14 0;
 }
 
 /* Input row (HBox wrapping icon + field) */
@@ -60,7 +69,6 @@
     -fx-padding: 0 12 0 12;
 }
 
-/* Input row — hover effect */
 .input-row:hover {
     -fx-border-color: #D92A1C;
     -fx-border-width: 1.5;
@@ -76,7 +84,6 @@
     -fx-padding: 0 12 0 12;
 }
 
-/* Password input row — hover effect */
 .input-row-error:hover {
     -fx-border-color: #b01e12;
     -fx-border-width: 2;
@@ -84,6 +91,7 @@
 
 /* Text fields inside rows */
 .input-field {
+    -fx-font-family: "SF Pro Display";
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-border-width: 0;
@@ -106,14 +114,16 @@
 }
 
 .forgot-link {
+    -fx-font-family: "SF Pro Display";
     -fx-font-size: 12px;
     -fx-text-fill: #D92A1C;
     -fx-border-color: transparent;
     -fx-padding: 0;
 }
 
-/* ── Sign-in button ── */
+/* ── Primary button (Sign in / Create Account) ── */
 .login-button {
+    -fx-font-family: "SF Pro Display";
     -fx-background-color: #D92A1C;
     -fx-text-fill: #FFFFFF;
     -fx-font-size: 14px;
@@ -122,23 +132,32 @@
     -fx-cursor: hand;
 }
 
+.login-button:hover {
+    -fx-background-color: #b01e12;
+}
+
 /* ── Divider "or" section ── */
 .divider-box {
     -fx-padding: 0 0 18 0;
 }
 
 .divider-label {
+    -fx-font-family: "SF Pro Display";
     -fx-font-size: 11px;
     -fx-text-fill: #cccccc;
 }
 
-/* ── Create account row ── */
-.no-account-label {
+/* ── Footer link rows (login & signup) ── */
+.no-account-label,
+.have-account-label {
+    -fx-font-family: "SF Pro Display";
     -fx-font-size: 12px;
     -fx-text-fill: #999999;
 }
 
-.create-account-link {
+.create-account-link,
+.signin-link {
+    -fx-font-family: "SF Pro Display";
     -fx-font-size: 12px;
     -fx-text-fill: #D92A1C;
     -fx-font-weight: bold;
@@ -148,7 +167,93 @@
 
 /* ── Error label ── */
 .error-label {
+    -fx-font-family: "SF Pro Display";
     -fx-font-size: 12px;
     -fx-text-fill: #D92A1C;
     -fx-padding: 10 0 8 0;
+}
+
+/* ── Send / Verify small buttons ── */
+.send-button, .verify-button {
+    -fx-font-family: "SF Pro Display";
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-color: #D92A1C;
+    -fx-background-radius: 8;
+    -fx-padding: 6 14 6 14;
+    -fx-cursor: hand;
+}
+
+.send-button {
+    -fx-padding: 6 12 6 12;
+}
+
+.verify-button {
+    -fx-padding: 0 16 0 16;
+}
+
+.send-button:hover, .verify-button:hover {
+    -fx-background-color: #b01e12;
+}
+
+.send-button:disabled, .verify-button:disabled {
+    -fx-background-color: #cccccc;
+    -fx-text-fill: #ffffff;
+    -fx-opacity: 1.0;
+}
+
+/* ── Countdown label (sits INSIDE the code input row) ── */
+.countdown-label {
+    -fx-font-family: "Consolas, Menlo, monospace";
+    -fx-font-size: 12px;
+    -fx-text-fill: #888888;
+    -fx-padding: 0 4 0 6;
+}
+
+.countdown-label-ok {
+    -fx-font-family: "SF Pro Display";
+    -fx-font-size: 11px;
+    -fx-text-fill: #1f8a3b;
+    -fx-font-weight: bold;
+    -fx-padding: 0 4 0 6;
+}
+
+.countdown-label-expired {
+    -fx-font-family: "Consolas, Menlo, monospace";
+    -fx-font-size: 11px;
+    -fx-text-fill: #D92A1C;
+    -fx-font-weight: bold;
+    -fx-padding: 0 4 0 6;
+}
+
+/* ── Disabled input row (greyed password fields before verify) ── */
+.input-row:disabled {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #e0e0e0;
+    -fx-opacity: 0.85;
+}
+
+/* ── Back button (Forgot Password) ── */
+.back-box {
+    -fx-padding: 0 0 12 0;
+}
+
+.back-button {
+    -fx-background-color: #f2f2f2;
+    -fx-background-radius: 20;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 20;
+    -fx-min-width: 32;
+    -fx-min-height: 32;
+    -fx-max-width: 32;
+    -fx-max-height: 32;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+
+.back-button:hover {
+    -fx-background-color: #eaeaea;
+    -fx-border-color: #D92A1C;
 }
