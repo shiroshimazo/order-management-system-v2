@@ -1,6 +1,7 @@
 package com.shiro.ordermanagementsystem.Controller;
 
-import com.shiro.ordermanagementsystem.UserDAO;
+import com.shiro.ordermanagementsystem.AdminDAO;
+import com.shiro.ordermanagementsystem.CustomerDAO;
 import com.shiro.ordermanagementsystem.mail.MailService;
 import com.shiro.ordermanagementsystem.mail.VerificationCodeStore;
 import javafx.animation.KeyFrame;
@@ -135,7 +136,7 @@ public class ForgotPasswordDashboardController {
             showError("Please enter a valid email address.");
             return;
         }
-        if (!UserDAO.emailExists(email)) {
+        if (!CustomerDAO.emailExists(email) && !AdminDAO.emailExists(email)) {
             showError("No account found with this email.");
             return;
         }
@@ -238,7 +239,9 @@ public class ForgotPasswordDashboardController {
             return;
         }
 
-        boolean ok = UserDAO.updatePasswordByEmail(verifiedEmail, newPassword);
+        boolean ok = AdminDAO.emailExists(verifiedEmail)
+                ? AdminDAO.updatePasswordByEmail(verifiedEmail, newPassword)
+                : CustomerDAO.updatePasswordByEmail(verifiedEmail, newPassword);
         if (!ok) {
             showError("Could not update password. Please try again.");
             return;

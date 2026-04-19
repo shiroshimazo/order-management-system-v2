@@ -1,7 +1,7 @@
 package com.shiro.ordermanagementsystem.Controller;
 
-import com.shiro.ordermanagementsystem.User;
-import com.shiro.ordermanagementsystem.UserDAO;
+import com.shiro.ordermanagementsystem.AdminDAO;
+import com.shiro.ordermanagementsystem.CustomerDAO;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -139,21 +139,20 @@ public class SignUpDashboardController {
             return;
         }
 
-        // ── Duplicate check ──
-        if (UserDAO.usernameExists(username)) {
+        // ── Duplicate check (across BOTH tables so login is unambiguous) ──
+        if (CustomerDAO.usernameExists(username) || AdminDAO.usernameExists(username)) {
             showError("Username is already taken.");
             return;
         }
 
-        if (UserDAO.emailExists(email)) {
+        if (CustomerDAO.emailExists(email) || AdminDAO.emailExists(email)) {
             showError("Email is already registered.");
             return;
         }
 
-        // ── Save to DB (BCrypt happens inside UserDAO) ──
-        boolean saved = UserDAO.createUser(
-                username, password, User.Role.CUSTOMER,
-                fullName, email, phone
+        // ── Save to DB (BCrypt happens inside CustomerDAO) ──
+        boolean saved = CustomerDAO.createCustomer(
+                username, password, fullName, email, phone
         );
 
         if (!saved) {

@@ -1,7 +1,9 @@
 package com.shiro.ordermanagementsystem.Controller;
 
-import com.shiro.ordermanagementsystem.User;
-import com.shiro.ordermanagementsystem.UserDAO;
+import com.shiro.ordermanagementsystem.Admin;
+import com.shiro.ordermanagementsystem.AdminDAO;
+import com.shiro.ordermanagementsystem.Customer;
+import com.shiro.ordermanagementsystem.CustomerDAO;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -67,25 +69,29 @@ public class LoginDashboardController {
             return;
         }
 
-        User user = UserDAO.findByUsername(username);
-        if (user == null) {
-            showError("Invalid username or password.");
+        // ── Admin first ──
+        Admin admin = AdminDAO.findByUsername(username);
+        if (admin != null) {
+            if (!BCrypt.checkpw(password, admin.getPassword())) {
+                showError("Invalid username or password.");
+                return;
+            }
+            showAdminAuthPopup(admin);
             return;
         }
 
-        if (!BCrypt.checkpw(password, user.getPassword())) {
-            showError("Invalid username or password.");
+        // ── Then customer ──
+        Customer customer = CustomerDAO.findByUsername(username);
+        if (customer != null && BCrypt.checkpw(password, customer.getPassword())) {
+            navigateTo("/ordermanagementsystem/fxml/CustomerHome.fxml", 420, 660);
             return;
         }
 
-        switch (user.getRole()) {
-            case ADMIN    -> showAdminAuthPopup();
-            case CUSTOMER -> navigateTo("/ordermanagementsystem/fxml/CustomerHome.fxml", 420, 660);
-        }
+        showError("Invalid username or password.");
     }
 
-    // ─── Admin ID Pop-up ──────────────────────────────────────────────────────
-    private void showAdminAuthPopup() {
+    // ─── Admin ID Pop-up (validates against DB admin_code) ────────────────────
+    private void showAdminAuthPopup(Admin admin) {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Admin Verification");
         dialog.setHeaderText("Admin Access Only");
@@ -94,7 +100,8 @@ public class LoginDashboardController {
                 "-fx-background-color: #FDFDFD; -fx-font-size: 13px;"
         );
         dialog.showAndWait().ifPresent(adminId -> {
-            if (adminId.equals("ADMIN-001")) {
+            if (adminId.trim().equalsIgnoreCase(admin.getAdminCode())) {
+                AdminDAO.updateLastLogin(admin.getId());
                 navigateTo("/ordermanagementsystem/fxml/AdminDashboard.fxml", 420, 660);
             } else {
                 showError("Invalid Admin ID. Access denied.");
