@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.shiro.ordermanagementsystem.Controller.admin.ReportsController"
+      alignment="CENTER"
+      spacing="14"
+      styleClass="placeholder-view">
+
+    <FontIcon iconLiteral="fas-chart-line" iconSize="48" iconColor="#D92A1C" />
+    <Label text="Reports" styleClass="placeholder-title" />
+    <Label text="Sales / inventory / customer reports coming in Phase 6" styleClass="placeholder-subtitle" />
+</VBox>

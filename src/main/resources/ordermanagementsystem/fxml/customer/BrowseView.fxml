@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.shiro.ordermanagementsystem.Controller.customer.BrowseController"
+      spacing="16"
+      styleClass="dashboard-view">
+
+    <!-- Toolbar -->
+    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="toolbar">
+        <HBox styleClass="search-box" alignment="CENTER_LEFT" spacing="8" HBox.hgrow="ALWAYS">
+            <FontIcon iconLiteral="fas-search" iconSize="13" iconColor="#888888" />
+            <TextField fx:id="searchField"
+                       promptText="Search products…"
+                       styleClass="search-field"
+                       HBox.hgrow="ALWAYS" />
+        </HBox>
+        <Label text="Category:" styleClass="form-label" />
+        <ComboBox fx:id="categoryFilter" prefWidth="180" styleClass="form-field" />
+        <Button text="Refresh" onAction="#handleRefresh" styleClass="button-secondary" />
+    </HBox>
+
+    <!-- Product table -->
+    <VBox styleClass="chart-card" spacing="8" VBox.vgrow="ALWAYS">
+        <TableView fx:id="productsTable" styleClass="mini-table" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colName"       text="Product"  prefWidth="260" />
+                <TableColumn fx:id="colCategory"   text="Category" prefWidth="130" />
+                <TableColumn fx:id="colPrice"      text="Price"    prefWidth="110" />
+                <TableColumn fx:id="colStock"      text="Stock"    prefWidth="90" />
+                <TableColumn fx:id="colActions"    text="Add to Cart" prefWidth="180" />
+            </columns>
+            <placeholder>
+                <Label text="No products match your search." styleClass="dashboard-subgreeting" />
+            </placeholder>
+        </TableView>
+        <Label fx:id="countLabel" text="0 products" styleClass="dashboard-subgreeting" />
+    </VBox>
+</VBox>

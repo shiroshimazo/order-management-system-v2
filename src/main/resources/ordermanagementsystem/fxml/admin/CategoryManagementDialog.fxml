@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.shiro.ordermanagementsystem.Controller.admin.CategoryManagementDialogController"
+      prefWidth="560"
+      spacing="16"
+      styleClass="settings-card">
+
+    <Label text="Manage Categories" styleClass="section-title" />
+    <Separator />
+
+    <!-- Add / Edit row -->
+    <GridPane hgap="10" vgap="8">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="40" />
+            <ColumnConstraints percentWidth="60" />
+        </columnConstraints>
+
+        <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <Label text="Name" styleClass="form-label" />
+            <TextField fx:id="nameField" promptText="Category name" styleClass="form-field" />
+        </VBox>
+
+        <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
+            <Label text="Description (optional)" styleClass="form-label" />
+            <TextField fx:id="descriptionField" promptText="Short description" styleClass="form-field" />
+        </VBox>
+    </GridPane>
+
+    <HBox spacing="8" alignment="CENTER_LEFT">
+        <Button fx:id="saveCategoryButton" text="Add" onAction="#handleSaveCategory" styleClass="button-primary" />
+        <Button fx:id="clearButton"        text="Clear" onAction="#handleClear"        styleClass="button-secondary" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Label fx:id="messageLabel" text="" styleClass="form-message" managed="false" visible="false" />
+    </HBox>
+
+    <Separator />
+
+    <TableView fx:id="categoriesTable" styleClass="mini-table" prefHeight="260">
+        <columns>
+            <TableColumn fx:id="colName"        text="Name"        prefWidth="160" />
+            <TableColumn fx:id="colDescription" text="Description" prefWidth="260" />
+            <TableColumn fx:id="colActions"     text="Actions"     prefWidth="110" />
+        </columns>
+        <placeholder>
+            <Label text="No categories yet." styleClass="dashboard-subgreeting" />
+        </placeholder>
+    </TableView>
+
+    <HBox alignment="CENTER_RIGHT">
+        <Button text="Close" onAction="#handleClose" styleClass="button-secondary" />
+    </HBox>
+</VBox>

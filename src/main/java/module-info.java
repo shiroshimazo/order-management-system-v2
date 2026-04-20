@@ -12,6 +12,9 @@ module com.shiro.ordermanagementsystem {
 
     opens com.shiro.ordermanagementsystem to javafx.graphics;
     opens com.shiro.ordermanagementsystem.Controller to javafx.fxml;
+    opens com.shiro.ordermanagementsystem.Controller.admin to javafx.fxml;
+    opens com.shiro.ordermanagementsystem.Controller.customer to javafx.fxml;
+    opens com.shiro.ordermanagementsystem.Controller.shared to javafx.fxml;
 
     exports com.shiro.ordermanagementsystem;
 }

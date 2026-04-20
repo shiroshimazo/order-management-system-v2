@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.shiro.ordermanagementsystem.Controller.customer.CartController"
+      spacing="16"
+      styleClass="dashboard-view">
+
+    <Label text="Your Cart" styleClass="dashboard-greeting" />
+
+    <!-- Cart table -->
+    <VBox styleClass="chart-card" spacing="8">
+        <TableView fx:id="cartTable" styleClass="mini-table" prefHeight="300">
+            <columns>
+                <TableColumn fx:id="colProduct"  text="Product"  prefWidth="260" />
+                <TableColumn fx:id="colPrice"    text="Price"    prefWidth="100" />
+                <TableColumn fx:id="colQty"      text="Quantity" prefWidth="140" />
+                <TableColumn fx:id="colSubtotal" text="Subtotal" prefWidth="120" />
+                <TableColumn fx:id="colActions"  text=""         prefWidth="80" />
+            </columns>
+            <placeholder>
+                <Label text="Your cart is empty." styleClass="dashboard-subgreeting" />
+            </placeholder>
+        </TableView>
+
+        <HBox alignment="CENTER_RIGHT" spacing="16">
+            <Label text="Total:" styleClass="kpi-label" />
+            <Label fx:id="totalLabel" text="₱0.00" styleClass="kpi-value" />
+        </HBox>
+    </VBox>
+
+    <!-- Checkout form -->
+    <VBox styleClass="chart-card" spacing="14">
+        <Label text="Delivery Details" styleClass="section-title" />
+        <Separator />
+
+        <GridPane hgap="14" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="60" />
+                <ColumnConstraints percentWidth="40" />
+            </columnConstraints>
+
+            <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label text="Shipping Address" styleClass="form-label" />
+                <TextField fx:id="addressField" promptText="Street, Barangay, City, Province" styleClass="form-field" />
+            </VBox>
+
+            <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label text="Contact Number" styleClass="form-label" />
+                <TextField fx:id="contactField" promptText="+63 9XX XXX XXXX" styleClass="form-field" />
+            </VBox>
+
+            <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
+                <Label text="Notes (optional)" styleClass="form-label" />
+                <TextArea fx:id="notesField" prefRowCount="2" promptText="Delivery instructions, preferred time, etc." styleClass="form-field" wrapText="true" />
+            </VBox>
+        </GridPane>
+
+        <Label fx:id="messageLabel" text="" styleClass="form-message" managed="false" visible="false" />
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="Clear Cart" onAction="#handleClear"     styleClass="button-secondary" />
+            <Button fx:id="checkoutButton" text="Place Order" onAction="#handleCheckout" styleClass="button-primary" />
+        </HBox>
+    </VBox>
+
+</VBox>

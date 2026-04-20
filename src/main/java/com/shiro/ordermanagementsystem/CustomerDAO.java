@@ -45,6 +45,20 @@ public class CustomerDAO {
         return checkExists("SELECT 1 FROM user_customer WHERE email = ?", email);
     }
 
+    public static boolean emailExistsExcept(String email, int excludeId) {
+        String sql = "SELECT 1 FROM user_customer WHERE email = ? AND id <> ?";
+        try (Connection conn = Databaseconnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            stmt.setInt(2, excludeId);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     private static boolean checkExists(String sql, String value) {
         try (Connection conn = Databaseconnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

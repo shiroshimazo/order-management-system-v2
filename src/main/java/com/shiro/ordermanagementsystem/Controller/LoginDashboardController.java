@@ -4,6 +4,7 @@ import com.shiro.ordermanagementsystem.Admin;
 import com.shiro.ordermanagementsystem.AdminDAO;
 import com.shiro.ordermanagementsystem.Customer;
 import com.shiro.ordermanagementsystem.CustomerDAO;
+import com.shiro.ordermanagementsystem.session.Session;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -83,7 +84,8 @@ public class LoginDashboardController {
         // ── Then customer ──
         Customer customer = CustomerDAO.findByUsername(username);
         if (customer != null && BCrypt.checkpw(password, customer.getPassword())) {
-            navigateTo("/ordermanagementsystem/fxml/CustomerHome.fxml", 420, 660);
+            Session.setCurrentCustomer(customer);
+            navigateToCustomer("/ordermanagementsystem/fxml/CustomerHome.fxml", 1100, 720);
             return;
         }
 
@@ -102,7 +104,8 @@ public class LoginDashboardController {
         dialog.showAndWait().ifPresent(adminId -> {
             if (adminId.trim().equalsIgnoreCase(admin.getAdminCode())) {
                 AdminDAO.updateLastLogin(admin.getId());
-                navigateTo("/ordermanagementsystem/fxml/AdminDashboard.fxml", 420, 660);
+                Session.setCurrentAdmin(admin);
+                navigateToAdmin("/ordermanagementsystem/fxml/AdminShell.fxml", 1280, 800);
             } else {
                 showError("Invalid Admin ID. Access denied.");
             }
@@ -119,6 +122,36 @@ public class LoginDashboardController {
 
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.getScene().setRoot(root);
+            stage.setWidth(width);
+            stage.setHeight(height);
+            stage.centerOnScreen();
+        } catch (Exception e) {
+            showError("Navigation error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void navigateToAdmin(String fxmlPath, double width, double height) {
+        navigateToShell(fxmlPath, width, height, 1024, 680);
+    }
+
+    private void navigateToCustomer(String fxmlPath, double width, double height) {
+        navigateToShell(fxmlPath, width, height, 900, 640);
+    }
+
+    private void navigateToShell(String fxmlPath, double width, double height,
+                                 double minWidth, double minHeight) {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                    getClass().getResource(fxmlPath)
+            );
+            javafx.scene.Parent root = loader.load();
+
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            stage.getScene().setRoot(root);
+            stage.setResizable(true);
+            stage.setMinWidth(minWidth);
+            stage.setMinHeight(minHeight);
             stage.setWidth(width);
             stage.setHeight(height);
             stage.centerOnScreen();

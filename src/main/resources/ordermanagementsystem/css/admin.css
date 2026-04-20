@@ -1,0 +1,549 @@
+/* ============================================================
+   admin.css — Admin Dashboard Shell
+   Location: src/main/resources/ordermanagementsystem/css/admin.css
+   ============================================================ */
+
+.admin-root {
+    -fx-font-family: "SF Pro Display";
+    -fx-background-color: #f4f5f7;
+}
+
+/* ═══ TOP BAR ═══ */
+.top-bar {
+    -fx-background-color: #ffffff;
+    -fx-padding: 12 24 12 16;
+    -fx-border-color: transparent transparent #e5e7eb transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-min-height: 56;
+    -fx-pref-height: 56;
+}
+
+.hamburger-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8;
+    -fx-padding: 6 10 6 10;
+    -fx-cursor: hand;
+}
+.hamburger-button:hover {
+    -fx-background-color: #f2f2f2;
+}
+
+.page-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222222;
+    -fx-padding: 0 0 0 6;
+}
+
+.admin-badge {
+    -fx-padding: 4 12 4 12;
+    -fx-background-color: #fafafa;
+    -fx-background-radius: 10;
+    -fx-border-color: #eeeeee;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+}
+
+.admin-name {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222222;
+}
+
+.admin-level {
+    -fx-font-size: 10px;
+    -fx-text-fill: #D92A1C;
+    -fx-font-weight: bold;
+}
+
+/* ═══ SIDEBAR ═══ */
+.sidebar {
+    -fx-background-color: #1a1d23;
+    -fx-padding: 18 12 18 12;
+}
+
+.sidebar-brand {
+    -fx-padding: 4 8 16 8;
+}
+
+.brand-label {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+.sidebar-divider {
+    -fx-padding: 0 0 0 0;
+    -fx-opacity: 0.35;
+}
+
+.menu-container {
+    -fx-padding: 12 0 12 0;
+}
+
+/* ── Menu buttons ── */
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10;
+    -fx-text-fill: #cccccc;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10 14 10 14;
+    -fx-cursor: hand;
+}
+
+.menu-button:hover {
+    -fx-background-color: #26292f;
+}
+
+.menu-button-active {
+    -fx-background-color: #2a2d33;
+    -fx-border-color: #D92A1C transparent transparent transparent;
+    -fx-border-width: 0 0 0 3;
+    -fx-padding: 10 14 10 11;
+}
+
+.menu-label {
+    -fx-text-fill: #dcdcdc;
+    -fx-font-size: 13px;
+}
+
+.menu-button-active .menu-label {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+/* ── Logout ── */
+.logout-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10;
+    -fx-padding: 10 14 10 14;
+    -fx-cursor: hand;
+}
+
+.logout-button:hover {
+    -fx-background-color: #3a1a1a;
+}
+
+.logout-label {
+    -fx-text-fill: #dcdcdc;
+    -fx-font-size: 13px;
+}
+
+.logout-button:hover .logout-label {
+    -fx-text-fill: #ff6b60;
+}
+
+/* ═══ CONTENT AREA ═══ */
+.content-area {
+    -fx-background-color: #f4f5f7;
+    -fx-padding: 24;
+}
+
+/* ── Placeholder views ── */
+.placeholder-view {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 14;
+    -fx-border-color: #e8e8e8;
+    -fx-border-width: 1;
+    -fx-border-radius: 14;
+    -fx-padding: 40;
+}
+
+.placeholder-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222222;
+}
+
+.placeholder-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #888888;
+}
+
+/* ═══ DASHBOARD ═══ */
+.dashboard-scroll {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.dashboard-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.dashboard-view {
+    -fx-padding: 4 4 16 4;
+}
+
+.dashboard-greeting {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222222;
+}
+
+.dashboard-subgreeting {
+    -fx-font-size: 12px;
+    -fx-text-fill: #888888;
+}
+
+/* ── KPI Cards ── */
+.kpi-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 14;
+    -fx-border-color: #e8e8e8;
+    -fx-border-width: 1;
+    -fx-border-radius: 14;
+    -fx-padding: 18 20 18 20;
+}
+
+.kpi-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #888888;
+    -fx-font-weight: bold;
+}
+
+.kpi-value {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222222;
+}
+
+.kpi-delta-up {
+    -fx-font-size: 11px;
+    -fx-text-fill: #1f8a3b;
+    -fx-font-weight: bold;
+}
+
+.kpi-delta-down {
+    -fx-font-size: 11px;
+    -fx-text-fill: #D92A1C;
+    -fx-font-weight: bold;
+}
+
+.kpi-delta-neutral {
+    -fx-font-size: 11px;
+    -fx-text-fill: #888888;
+}
+
+/* ── Chart Cards ── */
+.chart-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 14;
+    -fx-border-color: #e8e8e8;
+    -fx-border-width: 1;
+    -fx-border-radius: 14;
+    -fx-padding: 18;
+}
+
+.chart-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+/* ── Chart theming ── */
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.chart-vertical-grid-lines, .chart-horizontal-grid-lines {
+    -fx-stroke: #f0f0f0;
+}
+
+.axis {
+    -fx-tick-label-fill: #888888;
+    -fx-font-size: 10px;
+}
+
+/* Line chart (sales) — red */
+.default-color0.chart-series-line {
+    -fx-stroke: #D92A1C;
+    -fx-stroke-width: 2px;
+}
+
+.default-color0.chart-line-symbol {
+    -fx-background-color: #D92A1C, white;
+}
+
+/* Bar chart (top products) — red */
+.default-color0.chart-bar {
+    -fx-bar-fill: #D92A1C;
+}
+
+/* Pie chart slice colors */
+.default-color0.chart-pie { -fx-pie-color: #f0a020; } /* Pending    */
+.default-color1.chart-pie { -fx-pie-color: #3a72e8; } /* Processing */
+.default-color2.chart-pie { -fx-pie-color: #8b3ad1; } /* Shipped    */
+.default-color3.chart-pie { -fx-pie-color: #1f8a3b; } /* Delivered  */
+.default-color4.chart-pie { -fx-pie-color: #888888; } /* Cancelled  */
+
+.chart-pie-label { -fx-fill: #333; -fx-font-size: 11; }
+
+.chart-legend {
+    -fx-background-color: transparent;
+    -fx-font-size: 11px;
+}
+
+/* ── Mini Table (Recent Orders) ── */
+.mini-table {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-table-cell-border-color: transparent;
+}
+
+.mini-table .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.mini-table .column-header {
+    -fx-background-color: #fafafa;
+    -fx-border-color: transparent transparent #e8e8e8 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 6 8 6 8;
+    -fx-size: 32;
+}
+
+.mini-table .column-header .label {
+    -fx-text-fill: #888888;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.mini-table .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.mini-table .table-row-cell:selected {
+    -fx-background-color: #fff2f0;
+}
+
+.mini-table .table-cell {
+    -fx-font-size: 12px;
+    -fx-text-fill: #333;
+    -fx-border-color: transparent;
+    -fx-padding: 8 10 8 10;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Status badges in table */
+.status-pending    { -fx-text-fill: #f0a020; -fx-font-weight: bold; }
+.status-processing { -fx-text-fill: #3a72e8; -fx-font-weight: bold; }
+.status-shipped    { -fx-text-fill: #8b3ad1; -fx-font-weight: bold; }
+.status-delivered  { -fx-text-fill: #1f8a3b; -fx-font-weight: bold; }
+.status-cancelled  { -fx-text-fill: #888888; -fx-font-weight: bold; }
+
+/* ═══ SETTINGS ═══ */
+.settings-tabs {
+    -fx-tab-min-height: 36;
+    -fx-tab-max-height: 36;
+}
+
+.settings-tabs .tab-header-background {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #e5e7eb transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.settings-tabs .tab {
+    -fx-background-color: transparent;
+    -fx-padding: 6 16 6 16;
+    -fx-background-radius: 0;
+}
+
+.settings-tabs .tab:selected {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #D92A1C transparent;
+    -fx-border-width: 0 0 2 0;
+}
+
+.settings-tabs .tab .tab-label {
+    -fx-text-fill: #888888;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.settings-tabs .tab:selected .tab-label {
+    -fx-text-fill: #D92A1C;
+}
+
+.settings-tabs .tab:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.settings-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0 0 14 14;
+    -fx-border-color: #e8e8e8;
+    -fx-border-width: 0 1 1 1;
+    -fx-border-radius: 0 0 14 14;
+    -fx-padding: 24;
+}
+
+/* ── Profile header ── */
+.profile-header {
+    -fx-padding: 4 0 4 0;
+}
+
+.profile-name {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222222;
+}
+
+.profile-level {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #D92A1C;
+}
+
+.profile-code {
+    -fx-font-size: 11px;
+    -fx-text-fill: #888888;
+}
+
+/* ── Form fields ── */
+.form-grid {
+    -fx-padding: 4 0 4 0;
+}
+
+.form-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #555555;
+}
+
+.form-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d9dbe1;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8 12 8 12;
+    -fx-font-size: 13px;
+    -fx-text-fill: #222222;
+    -fx-prompt-text-fill: #aaaaaa;
+}
+
+.form-field:focused {
+    -fx-border-color: #D92A1C;
+    -fx-background-color: #ffffff;
+}
+
+.form-field-readonly {
+    -fx-background-color: #f4f5f7;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8 12 8 12;
+    -fx-font-size: 13px;
+    -fx-text-fill: #555555;
+}
+
+/* ── Password stack ── */
+.password-stack {
+    -fx-padding: 0;
+}
+
+.password-stack .eye-icon {
+    -fx-cursor: hand;
+    -fx-padding: 0 12 0 0;
+}
+
+/* ── Section headings inside card ── */
+.section-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222222;
+}
+
+.section-subtitle {
+    -fx-font-size: 11px;
+    -fx-text-fill: #888888;
+}
+
+/* ── Buttons ── */
+.button-primary {
+    -fx-background-color: #D92A1C;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 9 20 9 20;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.button-primary:hover { -fx-background-color: #c5241a; }
+.button-primary:pressed { -fx-background-color: #ab1f16; }
+
+.button-secondary {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #555555;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 9 20 9 20;
+    -fx-background-radius: 8;
+    -fx-border-color: #d9dbe1;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+}
+
+.button-secondary:hover { -fx-background-color: #f4f5f7; }
+
+/* ── Form messages ── */
+.form-message {
+    -fx-font-size: 12px;
+    -fx-padding: 4 0 0 0;
+}
+
+.form-message-error   { -fx-text-fill: #D92A1C; }
+.form-message-success { -fx-text-fill: #1f8a3b; }
+
+/* ═══ PRODUCTS TOOLBAR ═══ */
+.toolbar {
+    -fx-padding: 0 0 4 0;
+}
+
+.search-box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d9dbe1;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 0 10 0 10;
+}
+
+.search-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 8 0 8 0;
+    -fx-font-size: 13px;
+    -fx-prompt-text-fill: #aaaaaa;
+}
+
+.search-field:focused {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.search-box:focused {
+    -fx-border-color: #D92A1C;
+}
+
+.table-action-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 6;
+    -fx-padding: 4 8 4 8;
+    -fx-cursor: hand;
+}
+
+.table-action-button:hover {
+    -fx-background-color: #f4f5f7;
+}

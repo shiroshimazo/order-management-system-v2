@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.shiro.ordermanagementsystem.Controller.customer.CustomerHomeController"
+            prefWidth="1100"
+            prefHeight="720"
+            styleClass="customer-root"
+            stylesheets="@../css/admin.css,@../css/customer.css">
+
+    <!-- ═════ TOP BAR ═════ -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="top-bar">
+            <FontIcon iconLiteral="fas-store" iconSize="18" iconColor="#D92A1C" />
+            <Label text="OMS Shop" styleClass="page-title" />
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="admin-badge">
+                <FontIcon iconLiteral="fas-user-circle" iconSize="22" iconColor="#666666" />
+                <VBox alignment="CENTER_LEFT" spacing="0">
+                    <Label fx:id="customerNameLabel"  text="Customer"         styleClass="admin-name" />
+                    <Label fx:id="customerEmailLabel" text="email@example.com" styleClass="admin-level" />
+                </VBox>
+            </HBox>
+
+            <Button fx:id="logoutButton" onAction="#handleLogout" styleClass="button-secondary">
+                <graphic>
+                    <HBox alignment="CENTER_LEFT" spacing="6">
+                        <FontIcon iconLiteral="fas-sign-out-alt" iconSize="12" iconColor="#D92A1C" />
+                        <Label text="Logout" />
+                    </HBox>
+                </graphic>
+            </Button>
+        </HBox>
+    </top>
+
+    <!-- ═════ TABS ═════ -->
+    <center>
+        <TabPane fx:id="tabs" tabClosingPolicy="UNAVAILABLE" styleClass="customer-tabs">
+            <Tab fx:id="browseTab"   text="Browse" />
+            <Tab fx:id="cartTab"     text="Cart" />
+            <Tab fx:id="ordersTab"   text="My Orders" />
+        </TabPane>
+    </center>
+
+</BorderPane>

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(JAVA_HOME=\"C:/Users/shiro/.jdks/openjdk-26\" ./mvnw -q -DskipTests compile)",
+      "Bash(echo \"exit=$?\")",
+      "Read(//tmp/**)",
+      "Bash(JAVA_HOME=\"C:/Users/shiro/.jdks/openjdk-26\" ./mvnw -DskipTests compile)",
+      "Bash(grep -E \"\\(ERROR|BUILD FAILURE|symbol|cannot find|\\\\\\\\[ERROR\\\\\\\\]\\)\" /tmp/mvn.log)"
+    ]
+  }
+}

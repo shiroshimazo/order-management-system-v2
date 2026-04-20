@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.shiro.ordermanagementsystem.Controller.shared.OrderDetailsDialogController"
+      prefWidth="640"
+      spacing="14"
+      styleClass="settings-card">
+
+    <HBox spacing="16" alignment="CENTER_LEFT">
+        <VBox spacing="2" HBox.hgrow="ALWAYS">
+            <Label fx:id="orderCodeLabel" text="ORD-000000" styleClass="section-title" />
+            <Label fx:id="orderDateLabel" text=""           styleClass="section-subtitle" />
+        </VBox>
+        <Label fx:id="orderStatusLabel" text="Pending" />
+    </HBox>
+
+    <Separator />
+
+    <!-- Customer / shipping summary -->
+    <GridPane hgap="16" vgap="8">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="50" />
+            <ColumnConstraints percentWidth="50" />
+        </columnConstraints>
+
+        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <Label text="Customer" styleClass="form-label" />
+            <Label fx:id="customerLabel" text="—" />
+        </VBox>
+
+        <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="0">
+            <Label text="Contact" styleClass="form-label" />
+            <Label fx:id="contactLabel" text="—" />
+        </VBox>
+
+        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
+            <Label text="Shipping Address" styleClass="form-label" />
+            <Label fx:id="addressLabel" text="—" wrapText="true" />
+        </VBox>
+
+        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2">
+            <Label text="Notes" styleClass="form-label" />
+            <Label fx:id="notesLabel" text="—" wrapText="true" />
+        </VBox>
+    </GridPane>
+
+    <Separator />
+
+    <!-- Items -->
+    <Label text="Items" styleClass="form-label" />
+    <TableView fx:id="itemsTable" styleClass="mini-table" prefHeight="200">
+        <columns>
+            <TableColumn fx:id="colSku"       text="SKU"      prefWidth="100" />
+            <TableColumn fx:id="colName"      text="Product"  prefWidth="220" />
+            <TableColumn fx:id="colPrice"     text="Price"    prefWidth="90" />
+            <TableColumn fx:id="colQty"       text="Qty"      prefWidth="60" />
+            <TableColumn fx:id="colLineTotal" text="Subtotal" prefWidth="110" />
+        </columns>
+    </TableView>
+
+    <HBox alignment="CENTER_RIGHT" spacing="12">
+        <Label text="Total:" styleClass="kpi-label" />
+        <Label fx:id="totalLabel" text="₱0.00" styleClass="kpi-value" />
+    </HBox>
+
+    <Separator />
+
+    <!-- Admin-only status controls -->
+    <HBox fx:id="adminControls" spacing="10" alignment="CENTER_LEFT" managed="false" visible="false">
+        <Label text="Change Status:" styleClass="form-label" />
+        <ComboBox fx:id="statusCombo" prefWidth="180" styleClass="form-field" />
+        <Button text="Update" onAction="#handleUpdateStatus" styleClass="button-primary" />
+    </HBox>
+
+    <Label fx:id="messageLabel" text="" styleClass="form-message" managed="false" visible="false" />
+
+    <HBox alignment="CENTER_RIGHT">
+        <Button text="Close" onAction="#handleClose" styleClass="button-secondary" />
+    </HBox>
+</VBox>

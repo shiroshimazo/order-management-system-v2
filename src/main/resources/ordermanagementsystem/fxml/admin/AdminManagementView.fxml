@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.shiro.ordermanagementsystem.Controller.admin.AdminManagementController"
+      alignment="CENTER"
+      spacing="14"
+      styleClass="placeholder-view">
+
+    <FontIcon iconLiteral="fas-user-shield" iconSize="48" iconColor="#D92A1C" />
+    <Label text="Admin Management" styleClass="placeholder-title" />
+    <Label text="SUPER_ADMIN only — manage admins in Phase 7" styleClass="placeholder-subtitle" />
+</VBox>

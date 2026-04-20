@@ -28,6 +28,23 @@ public class AdminDAO {
         return null;
     }
 
+    // ─── Find by id ───────────────────────────────────────────────────────────
+    public static Admin findById(int id) {
+        String sql = "SELECT * FROM admin WHERE id = ?";
+
+        try (Connection conn = Databaseconnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) return mapRow(rs);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     // ─── Existence checks ─────────────────────────────────────────────────────
     public static boolean usernameExists(String username) {
         return checkExists("SELECT 1 FROM admin WHERE username = ?", username);
@@ -35,6 +52,20 @@ public class AdminDAO {
 
     public static boolean emailExists(String email) {
         return checkExists("SELECT 1 FROM admin WHERE email = ?", email);
+    }
+
+    public static boolean emailExistsExcept(String email, int excludeId) {
+        String sql = "SELECT 1 FROM admin WHERE email = ? AND id <> ?";
+        try (Connection conn = Databaseconnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            stmt.setInt(2, excludeId);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private static boolean checkExists(String sql, String value) {
@@ -73,6 +104,47 @@ public class AdminDAO {
             if (position != null) stmt.setString(8, position); else stmt.setNull(8, java.sql.Types.VARCHAR);
             if (createdBy != null) stmt.setInt(9, createdBy); else stmt.setNull(9, java.sql.Types.INTEGER);
 
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // ─── Update profile (editable fields only) ────────────────────────────────
+    public static boolean updateProfile(int id, String fullName, String email,
+                                        String phone, String position) {
+        String sql = "UPDATE admin SET full_name = ?, email = ?, phone = ?, position = ? " +
+                     "WHERE id = ?";
+
+        try (Connection conn = Databaseconnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, fullName);
+            stmt.setString(2, email);
+            if (phone    != null && !phone.isBlank())    stmt.setString(3, phone);    else stmt.setNull(3, java.sql.Types.VARCHAR);
+            if (position != null && !position.isBlank()) stmt.setString(4, position); else stmt.setNull(4, java.sql.Types.VARCHAR);
+            stmt.setInt(5, id);
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // ─── Update password by id ────────────────────────────────────────────────
+    public static boolean updatePasswordById(int id, String plainPassword) {
+        String sql = "UPDATE admin SET password = ? WHERE id = ?";
+        String hashed = BCrypt.hashpw(plainPassword, BCrypt.gensalt(12));
+
+        try (Connection conn = Databaseconnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, hashed);
+            stmt.setInt(2, id);
             return stmt.executeUpdate() > 0;
 
         } catch (SQLException e) {

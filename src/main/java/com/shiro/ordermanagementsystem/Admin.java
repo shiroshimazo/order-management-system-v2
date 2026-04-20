@@ -54,4 +54,10 @@ public class Admin {
     public LocalDateTime getCreatedAt()   { return createdAt; }
     public LocalDateTime getLastLoginAt() { return lastLoginAt; }
     public Integer       getCreatedBy()   { return createdBy; }
+
+    public void setFullName(String fullName) { this.fullName = fullName; }
+    public void setEmail(String email)       { this.email = email; }
+    public void setPhone(String phone)       { this.phone = phone; }
+    public void setPosition(String position) { this.position = position; }
+    public void setPassword(String password) { this.password = password; }
 }

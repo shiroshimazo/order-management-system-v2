@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.shiro.ordermanagementsystem.Controller.admin.DashboardController"
+            fitToWidth="true"
+            hbarPolicy="NEVER"
+            styleClass="dashboard-scroll">
+
+    <VBox spacing="20" styleClass="dashboard-view">
+
+        <!-- Greeting -->
+        <VBox spacing="2">
+            <Label fx:id="greetingLabel" text="Welcome back!" styleClass="dashboard-greeting" />
+            <Label fx:id="dateLabel"     text=""              styleClass="dashboard-subgreeting" />
+        </VBox>
+
+        <!-- KPI Row -->
+        <HBox spacing="16" styleClass="kpi-row">
+            <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" spacing="8">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <FontIcon iconLiteral="fas-shopping-cart" iconSize="16" iconColor="#D92A1C" />
+                    <Label text="Total Orders Today" styleClass="kpi-label" />
+                </HBox>
+                <Label fx:id="kpiOrdersToday" text="0"  styleClass="kpi-value" />
+                <Label fx:id="kpiOrdersDelta" text=""   styleClass="kpi-delta-up" />
+            </VBox>
+
+            <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" spacing="8">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <FontIcon iconLiteral="fas-clock" iconSize="16" iconColor="#f0a020" />
+                    <Label text="Pending Orders" styleClass="kpi-label" />
+                </HBox>
+                <Label fx:id="kpiPending" text="0" styleClass="kpi-value" />
+                <Label text="Needs attention" styleClass="kpi-delta-neutral" />
+            </VBox>
+
+            <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" spacing="8">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <FontIcon iconLiteral="fas-coins" iconSize="16" iconColor="#1f8a3b" />
+                    <Label text="Revenue Today" styleClass="kpi-label" />
+                </HBox>
+                <Label fx:id="kpiRevenueToday" text="₱0"       styleClass="kpi-value" />
+                <Label fx:id="kpiRevenueMtd"   text="MTD: ₱0"  styleClass="kpi-delta-neutral" />
+            </VBox>
+
+            <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" spacing="8">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <FontIcon iconLiteral="fas-exclamation-triangle" iconSize="16" iconColor="#D92A1C" />
+                    <Label text="Low Stock" styleClass="kpi-label" />
+                </HBox>
+                <Label fx:id="kpiLowStock" text="0" styleClass="kpi-value" />
+                <Label text="Products need restock" styleClass="kpi-delta-down" />
+            </VBox>
+        </HBox>
+
+        <!-- Charts Row 1 -->
+        <HBox spacing="16">
+            <VBox styleClass="chart-card" HBox.hgrow="ALWAYS" spacing="10">
+                <Label text="Sales Trend (Last 30 Days)" styleClass="chart-title" />
+                <LineChart fx:id="salesChart" legendVisible="false" createSymbols="false"
+                           prefHeight="260" animated="false">
+                    <xAxis>
+                        <CategoryAxis fx:id="salesXAxis" side="BOTTOM" tickLabelRotation="-45" />
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis fx:id="salesYAxis" side="LEFT" />
+                    </yAxis>
+                </LineChart>
+            </VBox>
+
+            <VBox styleClass="chart-card" prefWidth="360" minWidth="360" spacing="10">
+                <Label text="Orders by Status" styleClass="chart-title" />
+                <PieChart fx:id="statusChart" legendSide="BOTTOM" labelsVisible="false"
+                          prefHeight="260" animated="false" />
+            </VBox>
+        </HBox>
+
+        <!-- Charts Row 2 -->
+        <HBox spacing="16">
+            <VBox styleClass="chart-card" HBox.hgrow="ALWAYS" spacing="10">
+                <Label text="Top 5 Products (This Month)" styleClass="chart-title" />
+                <BarChart fx:id="topProductsChart" legendVisible="false"
+                          horizontalGridLinesVisible="true" verticalGridLinesVisible="false"
+                          prefHeight="260" animated="false">
+                    <xAxis>
+                        <CategoryAxis fx:id="topXAxis" side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis fx:id="topYAxis" side="LEFT" />
+                    </yAxis>
+                </BarChart>
+            </VBox>
+
+            <VBox styleClass="chart-card" prefWidth="440" minWidth="440" spacing="10">
+                <Label text="Recent Orders" styleClass="chart-title" />
+                <TableView fx:id="recentOrdersTable" styleClass="mini-table" prefHeight="260">
+                    <columns>
+                        <TableColumn fx:id="colOrderId"  text="Order #"  prefWidth="90" />
+                        <TableColumn fx:id="colCustomer" text="Customer" prefWidth="140" />
+                        <TableColumn fx:id="colAmount"   text="Amount"   prefWidth="90" />
+                        <TableColumn fx:id="colStatus"   text="Status"   prefWidth="100" />
+                    </columns>
+                </TableView>
+            </VBox>
+        </HBox>
+
+    </VBox>
+</ScrollPane>

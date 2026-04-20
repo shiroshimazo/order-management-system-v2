@@ -1,0 +1,183 @@
+package com.shiro.ordermanagementsystem.Controller;
+
+import com.shiro.ordermanagementsystem.Admin;
+import com.shiro.ordermanagementsystem.nav.AdminNav;
+import com.shiro.ordermanagementsystem.session.Session;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+import org.kordamp.ikonli.javafx.FontIcon;
+
+import java.util.EnumMap;
+import java.util.Map;
+
+public class AdminShellController {
+
+    // ─── Top bar ──────────────────────────────────────────────────────────────
+    @FXML private HBox      topBar;
+    @FXML private Button    hamburgerButton;
+    @FXML private Label     pageTitle;
+    @FXML private Label     adminNameLabel;
+    @FXML private Label     adminLevelLabel;
+
+    // ─── Sidebar ──────────────────────────────────────────────────────────────
+    @FXML private VBox      sidebar;
+    @FXML private Label     brandLabel;
+    @FXML private VBox      menuContainer;
+    @FXML private Button    logoutButton;
+    @FXML private Label     logoutLabel;
+
+    // ─── Content ──────────────────────────────────────────────────────────────
+    @FXML private StackPane contentArea;
+
+    // ─── State ────────────────────────────────────────────────────────────────
+    private static final double SIDEBAR_EXPANDED_WIDTH  = 240;
+    private static final double SIDEBAR_COLLAPSED_WIDTH = 64;
+    private static final Duration ANIM_DURATION         = Duration.millis(200);
+
+    private boolean collapsed = false;
+    private AdminNav activeNav;
+
+    private final Map<AdminNav, Button> menuButtons = new EnumMap<>(AdminNav.class);
+
+    private static AdminShellController instance;
+
+    // ─── Initialize ───────────────────────────────────────────────────────────
+    @FXML
+    public void initialize() {
+        instance = this;
+
+        Admin admin = Session.getCurrentAdmin();
+        if (admin != null) {
+            adminNameLabel.setText(admin.getFullName());
+            adminLevelLabel.setText(admin.getAdminLevel().name());
+        }
+
+        buildMenu(admin);
+        selectNav(AdminNav.DASHBOARD);
+    }
+
+    /** Called from child controllers (e.g. Settings) after profile edits. */
+    public static void refreshAdminInfo() {
+        if (instance == null) return;
+        Admin admin = Session.getCurrentAdmin();
+        if (admin == null) return;
+        instance.adminNameLabel.setText(admin.getFullName());
+        instance.adminLevelLabel.setText(admin.getAdminLevel().name());
+    }
+
+    // ─── Build sidebar menu from AdminNav enum ────────────────────────────────
+    private void buildMenu(Admin admin) {
+        menuContainer.getChildren().clear();
+        menuButtons.clear();
+
+        for (AdminNav nav : AdminNav.values()) {
+            if (!nav.isVisibleFor(admin)) continue;
+
+            Button btn = buildMenuButton(nav);
+            btn.setOnAction(e -> selectNav(nav));
+
+            menuContainer.getChildren().add(btn);
+            menuButtons.put(nav, btn);
+        }
+    }
+
+    private Button buildMenuButton(AdminNav nav) {
+        FontIcon icon = new FontIcon(nav.getIconLiteral());
+        icon.setIconSize(15);
+        icon.setIconColor(javafx.scene.paint.Color.web("#cccccc"));
+
+        Label label = new Label(nav.getLabel());
+        label.getStyleClass().add("menu-label");
+
+        HBox graphic = new HBox(12, icon, label);
+        graphic.setStyle("-fx-alignment: CENTER_LEFT;");
+
+        Button btn = new Button();
+        btn.setGraphic(graphic);
+        btn.setMaxWidth(Double.MAX_VALUE);
+        btn.getStyleClass().add("menu-button");
+        btn.getProperties().put("nav", nav);
+        return btn;
+    }
+
+    // ─── Select / swap content ────────────────────────────────────────────────
+    private void selectNav(AdminNav nav) {
+        if (nav == activeNav) return;
+
+        menuButtons.forEach((key, btn) -> {
+            btn.getStyleClass().remove("menu-button-active");
+            if (key == nav) btn.getStyleClass().add("menu-button-active");
+        });
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(nav.getFxmlPath()));
+            Parent view = loader.load();
+            contentArea.getChildren().setAll(view);
+            pageTitle.setText(nav.getLabel());
+            activeNav = nav;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    // ─── Sidebar collapse toggle ──────────────────────────────────────────────
+    @FXML
+    private void toggleSidebar() {
+        collapsed = !collapsed;
+        double target = collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_EXPANDED_WIDTH;
+
+        Timeline tl = new Timeline(new KeyFrame(ANIM_DURATION,
+                new KeyValue(sidebar.prefWidthProperty(),  target),
+                new KeyValue(sidebar.minWidthProperty(),   target),
+                new KeyValue(sidebar.maxWidthProperty(),   target)));
+        tl.play();
+
+        boolean showText = !collapsed;
+        brandLabel.setVisible(showText);
+        brandLabel.setManaged(showText);
+        logoutLabel.setVisible(showText);
+        logoutLabel.setManaged(showText);
+
+        menuButtons.values().forEach(btn -> {
+            HBox graphic = (HBox) btn.getGraphic();
+            if (graphic.getChildren().size() >= 2) {
+                Label lbl = (Label) graphic.getChildren().get(1);
+                lbl.setVisible(showText);
+                lbl.setManaged(showText);
+            }
+        });
+    }
+
+    // ─── Logout ───────────────────────────────────────────────────────────────
+    @FXML
+    private void handleLogout() {
+        try {
+            Session.clear();
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/ordermanagementsystem/fxml/LoginDashBoard.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            stage.getScene().setRoot(root);
+            stage.setMinWidth(0);
+            stage.setMinHeight(0);
+            stage.setResizable(false);
+            stage.setWidth(420);
+            stage.setHeight(660);
+            stage.centerOnScreen();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}

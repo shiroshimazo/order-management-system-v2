@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.shiro.ordermanagementsystem.Controller.customer.MyOrdersController"
+      spacing="16"
+      styleClass="dashboard-view">
+
+    <HBox alignment="CENTER_LEFT" spacing="12">
+        <VBox spacing="2" HBox.hgrow="ALWAYS">
+            <Label text="My Orders" styleClass="dashboard-greeting" />
+            <Label text="Track your past and pending orders" styleClass="dashboard-subgreeting" />
+        </VBox>
+        <Button text="Refresh" onAction="#handleRefresh" styleClass="button-secondary" />
+    </HBox>
+
+    <VBox styleClass="chart-card" spacing="8" VBox.vgrow="ALWAYS">
+        <TableView fx:id="ordersTable" styleClass="mini-table" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colCode"    text="Order #"  prefWidth="120" />
+                <TableColumn fx:id="colDate"    text="Placed"   prefWidth="160" />
+                <TableColumn fx:id="colItems"   text="Items"    prefWidth="80" />
+                <TableColumn fx:id="colTotal"   text="Total"    prefWidth="120" />
+                <TableColumn fx:id="colStatus"  text="Status"   prefWidth="110" />
+                <TableColumn fx:id="colActions" text=""         prefWidth="120" />
+            </columns>
+            <placeholder>
+                <Label text="You haven't placed any orders yet." styleClass="dashboard-subgreeting" />
+            </placeholder>
+        </TableView>
+    </VBox>
+
+</VBox>

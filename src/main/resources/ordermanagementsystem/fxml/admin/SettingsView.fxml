@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.shiro.ordermanagementsystem.Controller.admin.SettingsController"
+            fitToWidth="true"
+            hbarPolicy="NEVER"
+            styleClass="dashboard-scroll">
+
+    <VBox spacing="18" styleClass="dashboard-view">
+
+        <!-- Header -->
+        <VBox spacing="2">
+            <Label text="Settings" styleClass="dashboard-greeting" />
+            <Label text="Manage your profile and security preferences" styleClass="dashboard-subgreeting" />
+        </VBox>
+
+        <!-- Tab container -->
+        <TabPane fx:id="settingsTabs" tabClosingPolicy="UNAVAILABLE" styleClass="settings-tabs">
+
+            <!-- ═══════════ MY PROFILE ═══════════ -->
+            <Tab text="My Profile">
+                <VBox styleClass="settings-card" spacing="18">
+
+                    <!-- Avatar header -->
+                    <HBox alignment="CENTER_LEFT" spacing="16" styleClass="profile-header">
+                        <FontIcon iconLiteral="fas-user-circle" iconSize="56" iconColor="#D92A1C" />
+                        <VBox spacing="2">
+                            <Label fx:id="profileNameLabel"  text="Admin Name"   styleClass="profile-name" />
+                            <Label fx:id="profileLevelLabel" text="SUPER_ADMIN"  styleClass="profile-level" />
+                            <Label fx:id="profileCodeLabel"  text="ADMIN-001"    styleClass="profile-code" />
+                        </VBox>
+                    </HBox>
+
+                    <Separator />
+
+                    <!-- Readonly row: Username + Admin Code + Level -->
+                    <GridPane hgap="16" vgap="14" styleClass="form-grid">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" />
+                            <ColumnConstraints percentWidth="50" />
+                        </columnConstraints>
+
+                        <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label text="Username" styleClass="form-label" />
+                            <TextField fx:id="usernameField" editable="false" styleClass="form-field-readonly" />
+                        </VBox>
+
+                        <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label text="Admin Level" styleClass="form-label" />
+                            <TextField fx:id="adminLevelField" editable="false" styleClass="form-field-readonly" />
+                        </VBox>
+
+                        <!-- Editable: Full Name, Email -->
+                        <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label text="Full Name" styleClass="form-label" />
+                            <TextField fx:id="fullNameField" promptText="Your full name" styleClass="form-field" />
+                        </VBox>
+
+                        <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label text="Email" styleClass="form-label" />
+                            <TextField fx:id="emailField" promptText="name@example.com" styleClass="form-field" />
+                        </VBox>
+
+                        <!-- Editable: Phone, Position -->
+                        <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                            <Label text="Phone" styleClass="form-label" />
+                            <TextField fx:id="phoneField" promptText="+63 9XX XXX XXXX" styleClass="form-field" />
+                        </VBox>
+
+                        <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                            <Label text="Position" styleClass="form-label" />
+                            <TextField fx:id="positionField" promptText="e.g. Store Manager" styleClass="form-field" />
+                        </VBox>
+                    </GridPane>
+
+                    <Label fx:id="profileMessageLabel" text="" styleClass="form-message" managed="false" visible="false" />
+
+                    <!-- Action buttons -->
+                    <HBox spacing="10" alignment="CENTER_RIGHT">
+                        <Button text="Cancel" onAction="#handleProfileCancel" styleClass="button-secondary" />
+                        <Button text="Save Changes" onAction="#handleProfileSave" styleClass="button-primary" />
+                    </HBox>
+                </VBox>
+            </Tab>
+
+            <!-- ═══════════ CHANGE PASSWORD ═══════════ -->
+            <Tab text="Change Password">
+                <VBox styleClass="settings-card" spacing="18">
+
+                    <VBox spacing="2">
+                        <Label text="Change Password" styleClass="section-title" />
+                        <Label text="Use at least 8 characters. Your current password is required." styleClass="section-subtitle" />
+                    </VBox>
+
+                    <Separator />
+
+                    <!-- Current password -->
+                    <VBox spacing="6">
+                        <Label text="Current Password" styleClass="form-label" />
+                        <StackPane styleClass="password-stack">
+                            <PasswordField fx:id="currentPasswordHidden" promptText="Enter your current password" styleClass="form-field" />
+                            <TextField     fx:id="currentPasswordShown"  promptText="Enter your current password" styleClass="form-field"
+                                           managed="false" visible="false" />
+                            <FontIcon fx:id="currentEyeIcon" iconLiteral="fas-eye" iconSize="16" iconColor="#888888"
+                                      styleClass="eye-icon" onMouseClicked="#toggleCurrentPassword"
+                                      StackPane.alignment="CENTER_RIGHT" />
+                        </StackPane>
+                    </VBox>
+
+                    <!-- New password -->
+                    <VBox spacing="6">
+                        <Label text="New Password" styleClass="form-label" />
+                        <StackPane styleClass="password-stack">
+                            <PasswordField fx:id="newPasswordHidden" promptText="At least 8 characters" styleClass="form-field" />
+                            <TextField     fx:id="newPasswordShown"  promptText="At least 8 characters" styleClass="form-field"
+                                           managed="false" visible="false" />
+                            <FontIcon fx:id="newEyeIcon" iconLiteral="fas-eye" iconSize="16" iconColor="#888888"
+                                      styleClass="eye-icon" onMouseClicked="#toggleNewPassword"
+                                      StackPane.alignment="CENTER_RIGHT" />
+                        </StackPane>
+                    </VBox>
+
+                    <!-- Confirm password -->
+                    <VBox spacing="6">
+                        <Label text="Confirm New Password" styleClass="form-label" />
+                        <StackPane styleClass="password-stack">
+                            <PasswordField fx:id="confirmPasswordHidden" promptText="Re-enter new password" styleClass="form-field" />
+                            <TextField     fx:id="confirmPasswordShown"  promptText="Re-enter new password" styleClass="form-field"
+                                           managed="false" visible="false" />
+                            <FontIcon fx:id="confirmEyeIcon" iconLiteral="fas-eye" iconSize="16" iconColor="#888888"
+                                      styleClass="eye-icon" onMouseClicked="#toggleConfirmPassword"
+                                      StackPane.alignment="CENTER_RIGHT" />
+                        </StackPane>
+                    </VBox>
+
+                    <Label fx:id="passwordMessageLabel" text="" styleClass="form-message" managed="false" visible="false" />
+
+                    <HBox spacing="10" alignment="CENTER_RIGHT">
+                        <Button text="Clear"           onAction="#handlePasswordClear"  styleClass="button-secondary" />
+                        <Button text="Change Password" onAction="#handlePasswordChange" styleClass="button-primary" />
+                    </HBox>
+                </VBox>
+            </Tab>
+
+        </TabPane>
+
+    </VBox>
+</ScrollPane>
