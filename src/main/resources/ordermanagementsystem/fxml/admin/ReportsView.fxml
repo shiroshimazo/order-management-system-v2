@@ -2,16 +2,118 @@
 
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
 <?import org.kordamp.ikonli.javafx.*?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.shiro.ordermanagementsystem.Controller.admin.ReportsController"
-      alignment="CENTER"
-      spacing="14"
-      styleClass="placeholder-view">
+<ScrollPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.shiro.ordermanagementsystem.Controller.admin.ReportsController"
+            fitToWidth="true"
+            hbarPolicy="NEVER"
+            styleClass="dashboard-scroll">
 
-    <FontIcon iconLiteral="fas-chart-line" iconSize="48" iconColor="#D92A1C" />
-    <Label text="Reports" styleClass="placeholder-title" />
-    <Label text="Sales / inventory / customer reports coming in Phase 6" styleClass="placeholder-subtitle" />
-</VBox>
+    <VBox spacing="16" styleClass="dashboard-view">
+
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <VBox spacing="2" HBox.hgrow="ALWAYS">
+                <Label text="Reports" styleClass="dashboard-greeting" />
+                <Label text="Sales performance and top products over time" styleClass="dashboard-subgreeting" />
+            </VBox>
+            <Button onAction="#handleExportCsv" styleClass="button-secondary">
+                <graphic>
+                    <HBox alignment="CENTER_LEFT" spacing="6">
+                        <FontIcon iconLiteral="fas-file-csv" iconSize="12" iconColor="#555555" />
+                        <Label text="Export CSV" />
+                    </HBox>
+                </graphic>
+            </Button>
+        </HBox>
+
+        <!-- Date range toolbar -->
+        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="toolbar">
+            <Label text="From:" styleClass="form-label" />
+            <DatePicker fx:id="fromDate" styleClass="form-field" />
+            <Label text="To:" styleClass="form-label" />
+            <DatePicker fx:id="toDate" styleClass="form-field" />
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <Button text="Today"       onAction="#handleQuickToday"      styleClass="button-secondary" />
+            <Button text="Last 7 days" onAction="#handleQuickLast7"      styleClass="button-secondary" />
+            <Button text="Last 30"     onAction="#handleQuickLast30"     styleClass="button-secondary" />
+            <Button text="This Month"  onAction="#handleQuickThisMonth"  styleClass="button-secondary" />
+            <Button text="Apply"       onAction="#handleApply"           styleClass="button-primary" />
+        </HBox>
+
+        <!-- KPI Row -->
+        <HBox spacing="16">
+            <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" spacing="8">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <FontIcon iconLiteral="fas-shopping-cart" iconSize="14" iconColor="#D92A1C" />
+                    <Label text="Orders" styleClass="kpi-label" />
+                </HBox>
+                <Label fx:id="kpiOrders" text="0" styleClass="kpi-value" />
+            </VBox>
+
+            <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" spacing="8">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <FontIcon iconLiteral="fas-coins" iconSize="14" iconColor="#1f8a3b" />
+                    <Label text="Revenue" styleClass="kpi-label" />
+                </HBox>
+                <Label fx:id="kpiRevenue" text="₱0" styleClass="kpi-value" />
+            </VBox>
+
+            <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" spacing="8">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <FontIcon iconLiteral="fas-receipt" iconSize="14" iconColor="#3a72e8" />
+                    <Label text="Avg Order Value" styleClass="kpi-label" />
+                </HBox>
+                <Label fx:id="kpiAov" text="₱0" styleClass="kpi-value" />
+            </VBox>
+
+            <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" spacing="8">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <FontIcon iconLiteral="fas-box" iconSize="14" iconColor="#8b3ad1" />
+                    <Label text="Items Sold" styleClass="kpi-label" />
+                </HBox>
+                <Label fx:id="kpiItems" text="0" styleClass="kpi-value" />
+            </VBox>
+        </HBox>
+
+        <!-- Chart row 1 -->
+        <HBox spacing="16">
+            <VBox styleClass="chart-card" HBox.hgrow="ALWAYS" spacing="10">
+                <Label text="Revenue by Day" styleClass="chart-title" />
+                <LineChart fx:id="salesChart" legendVisible="false" createSymbols="false"
+                           prefHeight="280" animated="false">
+                    <xAxis><CategoryAxis fx:id="salesXAxis" side="BOTTOM" tickLabelRotation="-45" /></xAxis>
+                    <yAxis><NumberAxis fx:id="salesYAxis" side="LEFT" /></yAxis>
+                </LineChart>
+            </VBox>
+
+            <VBox styleClass="chart-card" prefWidth="360" minWidth="360" spacing="10">
+                <Label text="Orders by Status" styleClass="chart-title" />
+                <PieChart fx:id="statusChart" legendSide="BOTTOM" labelsVisible="false"
+                          prefHeight="280" animated="false" />
+            </VBox>
+        </HBox>
+
+        <!-- Top products -->
+        <VBox styleClass="chart-card" spacing="10">
+            <Label text="Top Products by Revenue" styleClass="chart-title" />
+            <TableView fx:id="topProductsTable" styleClass="mini-table" prefHeight="260">
+                <columns>
+                    <TableColumn fx:id="colName"    text="Product" prefWidth="300" />
+                    <TableColumn fx:id="colSku"     text="SKU"     prefWidth="130" />
+                    <TableColumn fx:id="colSold"    text="Sold"    prefWidth="90" />
+                    <TableColumn fx:id="colRevenue" text="Revenue" prefWidth="130" />
+                </columns>
+                <placeholder>
+                    <Label text="No sales in the selected range." styleClass="dashboard-subgreeting" />
+                </placeholder>
+            </TableView>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

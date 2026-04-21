@@ -29,7 +29,7 @@
             <Region HBox.hgrow="ALWAYS" />
 
             <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="admin-badge">
-                <FontIcon iconLiteral="fas-user-circle" iconSize="22" iconColor="#666666" />
+                <Label fx:id="adminAvatarLabel" text="A" styleClass="avatar-initials" />
                 <VBox alignment="CENTER_LEFT" spacing="0">
                     <Label fx:id="adminNameLabel"  text="Admin"      styleClass="admin-name" />
                     <Label fx:id="adminLevelLabel" text="SUPER_ADMIN" styleClass="admin-level" />

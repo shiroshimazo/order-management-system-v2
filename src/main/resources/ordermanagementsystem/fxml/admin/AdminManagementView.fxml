@@ -7,11 +7,57 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.shiro.ordermanagementsystem.Controller.admin.AdminManagementController"
-      alignment="CENTER"
-      spacing="14"
-      styleClass="placeholder-view">
+      spacing="16"
+      styleClass="dashboard-view">
 
-    <FontIcon iconLiteral="fas-user-shield" iconSize="48" iconColor="#D92A1C" />
-    <Label text="Admin Management" styleClass="placeholder-title" />
-    <Label text="SUPER_ADMIN only — manage admins in Phase 7" styleClass="placeholder-subtitle" />
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="12">
+        <VBox spacing="2" HBox.hgrow="ALWAYS">
+            <Label text="Admin Management" styleClass="dashboard-greeting" />
+            <Label text="Create, edit and manage admin accounts" styleClass="dashboard-subgreeting" />
+        </VBox>
+        <Button onAction="#handleAddAdmin" styleClass="button-primary">
+            <graphic>
+                <HBox alignment="CENTER_LEFT" spacing="6">
+                    <FontIcon iconLiteral="fas-user-plus" iconSize="12" iconColor="#ffffff" />
+                    <Label text="Add Admin" style="-fx-text-fill: #ffffff;" />
+                </HBox>
+            </graphic>
+        </Button>
+    </HBox>
+
+    <!-- Toolbar -->
+    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="toolbar">
+        <HBox styleClass="search-box" alignment="CENTER_LEFT" spacing="8" HBox.hgrow="ALWAYS">
+            <FontIcon iconLiteral="fas-search" iconSize="13" iconColor="#888888" />
+            <TextField fx:id="searchField"
+                       promptText="Search by name, username, email, or code…"
+                       styleClass="search-field"
+                       HBox.hgrow="ALWAYS" />
+        </HBox>
+        <Label text="Role:" styleClass="form-label" />
+        <ComboBox fx:id="levelFilter" prefWidth="160" styleClass="form-field" />
+        <Button text="Refresh" onAction="#handleRefresh" styleClass="button-secondary" />
+    </HBox>
+
+    <!-- Table card -->
+    <VBox styleClass="chart-card" spacing="8" VBox.vgrow="ALWAYS">
+        <TableView fx:id="adminsTable" styleClass="mini-table" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colCode"      text="Code"        prefWidth="100" />
+                <TableColumn fx:id="colUsername"  text="Username"    prefWidth="130" />
+                <TableColumn fx:id="colName"      text="Full Name"   prefWidth="200" />
+                <TableColumn fx:id="colEmail"     text="Email"       prefWidth="200" />
+                <TableColumn fx:id="colLevel"     text="Role"        prefWidth="120" />
+                <TableColumn fx:id="colActive"    text="Status"      prefWidth="90" />
+                <TableColumn fx:id="colLastLogin" text="Last Login"  prefWidth="140" />
+                <TableColumn fx:id="colActions"   text="Actions"     prefWidth="160" />
+            </columns>
+            <placeholder>
+                <Label text="No admins match the current filter." styleClass="dashboard-subgreeting" />
+            </placeholder>
+        </TableView>
+        <Label fx:id="countLabel" text="0 admins" styleClass="dashboard-subgreeting" />
+    </VBox>
+
 </VBox>

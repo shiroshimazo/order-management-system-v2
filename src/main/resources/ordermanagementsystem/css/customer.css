@@ -6,6 +6,8 @@
 .customer-root {
     -fx-font-family: "SF Pro Display";
     -fx-background-color: #f4f5f7;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 .customer-tabs {

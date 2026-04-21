@@ -5,6 +5,7 @@ import com.shiro.ordermanagementsystem.AdminDAO;
 import com.shiro.ordermanagementsystem.Controller.AdminShellController;
 import com.shiro.ordermanagementsystem.CustomerDAO;
 import com.shiro.ordermanagementsystem.session.Session;
+import com.shiro.ordermanagementsystem.ui.Toast;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -106,7 +107,8 @@ public class SettingsController {
 
         profileNameLabel.setText(fullName);
         AdminShellController.refreshAdminInfo();
-        showProfileSuccess("Profile updated successfully.");
+        clearProfileMessage();
+        Toast.success(profileNameLabel, "Profile updated successfully.");
     }
 
     @FXML
@@ -147,7 +149,7 @@ public class SettingsController {
 
         admin.setPassword(BCrypt.hashpw(next, BCrypt.gensalt(12)));
         handlePasswordClear();
-        showPasswordSuccess("Password changed successfully.");
+        Toast.success(passwordMessageLabel, "Password changed successfully.");
     }
 
     @FXML

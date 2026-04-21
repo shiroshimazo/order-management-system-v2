@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.shiro.ordermanagementsystem.Controller.admin.AdminFormDialogController"
+      prefWidth="560"
+      spacing="14"
+      styleClass="settings-card">
+
+    <Label fx:id="titleLabel" text="Add Admin" styleClass="section-title" />
+    <Separator />
+
+    <GridPane hgap="14" vgap="12" styleClass="form-grid">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="50" />
+            <ColumnConstraints percentWidth="50" />
+        </columnConstraints>
+
+        <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <Label text="Admin Code *" styleClass="form-label" />
+            <TextField fx:id="adminCodeField" promptText="ADMIN-001" styleClass="form-field" />
+        </VBox>
+
+        <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
+            <Label text="Username *" styleClass="form-label" />
+            <TextField fx:id="usernameField" promptText="login name" styleClass="form-field" />
+        </VBox>
+
+        <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
+            <Label text="Full Name *" styleClass="form-label" />
+            <TextField fx:id="fullNameField" promptText="e.g. Juan Dela Cruz" styleClass="form-field" />
+        </VBox>
+
+        <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="2">
+            <Label text="Email *" styleClass="form-label" />
+            <TextField fx:id="emailField" promptText="name@example.com" styleClass="form-field" />
+        </VBox>
+
+        <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <Label text="Phone" styleClass="form-label" />
+            <TextField fx:id="phoneField" promptText="Optional" styleClass="form-field" />
+        </VBox>
+
+        <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="3">
+            <Label text="Role *" styleClass="form-label" />
+            <ComboBox fx:id="levelCombo" maxWidth="Infinity" styleClass="form-field" />
+        </VBox>
+
+        <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <Label text="Position" styleClass="form-label" />
+            <TextField fx:id="positionField" promptText="e.g. Store Manager" styleClass="form-field" />
+        </VBox>
+
+        <VBox fx:id="passwordRow" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2">
+            <Label text="Initial Password *" styleClass="form-label" />
+            <PasswordField fx:id="passwordField" promptText="Minimum 8 characters" styleClass="form-field" />
+        </VBox>
+    </GridPane>
+
+    <CheckBox fx:id="activeCheck" text="Active (can log in)" selected="true" />
+
+    <Label fx:id="messageLabel" text="" styleClass="form-message" managed="false" visible="false" />
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Cancel" onAction="#handleCancel" styleClass="button-secondary" />
+        <Button fx:id="saveButton" text="Create" onAction="#handleSave" styleClass="button-primary" />
+    </HBox>
+</VBox>

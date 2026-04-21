@@ -240,7 +240,7 @@ public class OrderDAO {
         }
     }
 
-    // ─── Count helpers (for dashboard wiring later) ───────────────────────────
+    // ─── Count helpers ────────────────────────────────────────────────────────
     public static int countByStatus(OrderStatus status) {
         String sql = "SELECT COUNT(*) FROM customer_order WHERE status = ?";
         try (Connection conn = Databaseconnection.getConnection();
@@ -252,6 +252,199 @@ public class OrderDAO {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public static int countOn(java.time.LocalDate date) {
+        String sql = "SELECT COUNT(*) FROM customer_order WHERE DATE(created_at) = ?";
+        try (Connection conn = Databaseconnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDate(1, java.sql.Date.valueOf(date));
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static java.math.BigDecimal revenueOn(java.time.LocalDate date) {
+        String sql = "SELECT COALESCE(SUM(total), 0) FROM customer_order " +
+                     "WHERE DATE(created_at) = ? AND status <> 'CANCELLED'";
+        try (Connection conn = Databaseconnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDate(1, java.sql.Date.valueOf(date));
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) return rs.getBigDecimal(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return java.math.BigDecimal.ZERO;
+    }
+
+    public static java.math.BigDecimal revenueBetween(java.time.LocalDate from, java.time.LocalDate to) {
+        String sql = "SELECT COALESCE(SUM(total), 0) FROM customer_order " +
+                     "WHERE DATE(created_at) BETWEEN ? AND ? AND status <> 'CANCELLED'";
+        try (Connection conn = Databaseconnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDate(1, java.sql.Date.valueOf(from));
+            stmt.setDate(2, java.sql.Date.valueOf(to));
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) return rs.getBigDecimal(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return java.math.BigDecimal.ZERO;
+    }
+
+    public static int countBetween(java.time.LocalDate from, java.time.LocalDate to) {
+        String sql = "SELECT COUNT(*) FROM customer_order " +
+                     "WHERE DATE(created_at) BETWEEN ? AND ?";
+        try (Connection conn = Databaseconnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDate(1, java.sql.Date.valueOf(from));
+            stmt.setDate(2, java.sql.Date.valueOf(to));
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static int itemsSoldBetween(java.time.LocalDate from, java.time.LocalDate to) {
+        String sql = "SELECT COALESCE(SUM(oi.quantity), 0) FROM order_item oi " +
+                     "JOIN customer_order o ON oi.order_id = o.id " +
+                     "WHERE DATE(o.created_at) BETWEEN ? AND ? AND o.status <> 'CANCELLED'";
+        try (Connection conn = Databaseconnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDate(1, java.sql.Date.valueOf(from));
+            stmt.setDate(2, java.sql.Date.valueOf(to));
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // ─── Sales by day (for line chart) ────────────────────────────────────────
+    public static java.util.Map<java.time.LocalDate, java.math.BigDecimal> salesByDay(
+            java.time.LocalDate from, java.time.LocalDate to) {
+        String sql = "SELECT DATE(created_at) AS d, COALESCE(SUM(total), 0) AS rev " +
+                     "FROM customer_order " +
+                     "WHERE DATE(created_at) BETWEEN ? AND ? AND status <> 'CANCELLED' " +
+                     "GROUP BY DATE(created_at)";
+        java.util.Map<java.time.LocalDate, java.math.BigDecimal> rows = new java.util.HashMap<>();
+        try (Connection conn = Databaseconnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDate(1, java.sql.Date.valueOf(from));
+            stmt.setDate(2, java.sql.Date.valueOf(to));
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                rows.put(rs.getDate("d").toLocalDate(), rs.getBigDecimal("rev"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Fill missing days with zero so charts show continuous line
+        java.util.LinkedHashMap<java.time.LocalDate, java.math.BigDecimal> filled = new java.util.LinkedHashMap<>();
+        for (java.time.LocalDate d = from; !d.isAfter(to); d = d.plusDays(1)) {
+            filled.put(d, rows.getOrDefault(d, java.math.BigDecimal.ZERO));
+        }
+        return filled;
+    }
+
+    // ─── Orders by status ─────────────────────────────────────────────────────
+    public static java.util.Map<OrderStatus, Integer> ordersByStatus() {
+        return ordersByStatusBetween(null, null);
+    }
+
+    public static java.util.Map<OrderStatus, Integer> ordersByStatusBetween(
+            java.time.LocalDate from, java.time.LocalDate to) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT status, COUNT(*) AS n FROM customer_order ");
+        java.util.List<Object> params = new java.util.ArrayList<>();
+        if (from != null && to != null) {
+            sql.append("WHERE DATE(created_at) BETWEEN ? AND ? ");
+            params.add(java.sql.Date.valueOf(from));
+            params.add(java.sql.Date.valueOf(to));
+        }
+        sql.append("GROUP BY status");
+
+        java.util.EnumMap<OrderStatus, Integer> out = new java.util.EnumMap<>(OrderStatus.class);
+        for (OrderStatus s : OrderStatus.values()) out.put(s, 0);
+
+        try (Connection conn = Databaseconnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) stmt.setObject(i + 1, params.get(i));
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                out.put(OrderStatus.valueOf(rs.getString("status")), rs.getInt("n"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return out;
+    }
+
+    // ─── Top products ─────────────────────────────────────────────────────────
+    public record TopProduct(String name, String sku, int sold, java.math.BigDecimal revenue) {}
+
+    public static java.util.List<TopProduct> topProducts(int limit) {
+        return topProductsBetween(null, null, limit);
+    }
+
+    public static java.util.List<TopProduct> topProductsBetween(
+            java.time.LocalDate from, java.time.LocalDate to, int limit) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT oi.product_name, oi.product_sku, " +
+                "       SUM(oi.quantity) AS sold, SUM(oi.line_total) AS revenue " +
+                "FROM order_item oi " +
+                "JOIN customer_order o ON oi.order_id = o.id " +
+                "WHERE o.status <> 'CANCELLED' ");
+        java.util.List<Object> params = new java.util.ArrayList<>();
+        if (from != null && to != null) {
+            sql.append("AND DATE(o.created_at) BETWEEN ? AND ? ");
+            params.add(java.sql.Date.valueOf(from));
+            params.add(java.sql.Date.valueOf(to));
+        }
+        sql.append("GROUP BY oi.product_name, oi.product_sku ")
+           .append("ORDER BY revenue DESC LIMIT ?");
+        params.add(limit);
+
+        java.util.List<TopProduct> list = new java.util.ArrayList<>();
+        try (Connection conn = Databaseconnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) stmt.setObject(i + 1, params.get(i));
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                list.add(new TopProduct(
+                        rs.getString("product_name"),
+                        rs.getString("product_sku"),
+                        rs.getInt("sold"),
+                        rs.getBigDecimal("revenue")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // ─── Recent orders (for dashboard) ────────────────────────────────────────
+    public static java.util.List<Order> recent(int limit) {
+        String sql = BASE_SELECT + "ORDER BY o.created_at DESC LIMIT ?";
+        java.util.List<Order> list = new java.util.ArrayList<>();
+        try (Connection conn = Databaseconnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, limit);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) list.add(mapRow(rs));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
     // ─── Row mapper ───────────────────────────────────────────────────────────

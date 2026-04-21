@@ -3,6 +3,7 @@ package com.shiro.ordermanagementsystem.Controller;
 import com.shiro.ordermanagementsystem.Admin;
 import com.shiro.ordermanagementsystem.nav.AdminNav;
 import com.shiro.ordermanagementsystem.session.Session;
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -29,6 +30,7 @@ public class AdminShellController {
     @FXML private Label     pageTitle;
     @FXML private Label     adminNameLabel;
     @FXML private Label     adminLevelLabel;
+    @FXML private Label     adminAvatarLabel;
 
     // ─── Sidebar ──────────────────────────────────────────────────────────────
     @FXML private VBox      sidebar;
@@ -58,10 +60,7 @@ public class AdminShellController {
         instance = this;
 
         Admin admin = Session.getCurrentAdmin();
-        if (admin != null) {
-            adminNameLabel.setText(admin.getFullName());
-            adminLevelLabel.setText(admin.getAdminLevel().name());
-        }
+        if (admin != null) paintAdminBadge(admin);
 
         buildMenu(admin);
         selectNav(AdminNav.DASHBOARD);
@@ -72,8 +71,20 @@ public class AdminShellController {
         if (instance == null) return;
         Admin admin = Session.getCurrentAdmin();
         if (admin == null) return;
-        instance.adminNameLabel.setText(admin.getFullName());
-        instance.adminLevelLabel.setText(admin.getAdminLevel().name());
+        instance.paintAdminBadge(admin);
+    }
+
+    private void paintAdminBadge(Admin admin) {
+        adminNameLabel.setText(admin.getFullName());
+        adminLevelLabel.setText(admin.getAdminLevel().name());
+        adminAvatarLabel.setText(initialsOf(admin.getFullName()));
+    }
+
+    private static String initialsOf(String fullName) {
+        if (fullName == null || fullName.isBlank()) return "A";
+        String[] parts = fullName.trim().split("\\s+");
+        if (parts.length == 1) return parts[0].substring(0, 1).toUpperCase();
+        return (parts[0].charAt(0) + "" + parts[parts.length - 1].charAt(0)).toUpperCase();
     }
 
     // ─── Build sidebar menu from AdminNav enum ────────────────────────────────
@@ -126,6 +137,11 @@ public class AdminShellController {
             contentArea.getChildren().setAll(view);
             pageTitle.setText(nav.getLabel());
             activeNav = nav;
+
+            FadeTransition fade = new FadeTransition(Duration.millis(160), view);
+            fade.setFromValue(0.0);
+            fade.setToValue(1.0);
+            fade.play();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

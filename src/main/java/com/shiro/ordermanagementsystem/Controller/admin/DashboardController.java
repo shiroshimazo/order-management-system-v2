@@ -1,5 +1,9 @@
 package com.shiro.ordermanagementsystem.Controller.admin;
 
+import com.shiro.ordermanagementsystem.Order;
+import com.shiro.ordermanagementsystem.OrderDAO;
+import com.shiro.ordermanagementsystem.OrderStatus;
+import com.shiro.ordermanagementsystem.ProductDAO;
 import com.shiro.ordermanagementsystem.session.Session;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -13,9 +17,12 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Random;
+import java.util.List;
+import java.util.Map;
 
 public class DashboardController {
 
@@ -33,11 +40,15 @@ public class DashboardController {
     @FXML private PieChart                  statusChart;
     @FXML private BarChart<String, Number>  topProductsChart;
 
-    @FXML private TableView<RecentOrder>          recentOrdersTable;
-    @FXML private TableColumn<RecentOrder, String> colOrderId;
-    @FXML private TableColumn<RecentOrder, String> colCustomer;
-    @FXML private TableColumn<RecentOrder, String> colAmount;
-    @FXML private TableColumn<RecentOrder, String> colStatus;
+    @FXML private TableView<Order>           recentOrdersTable;
+    @FXML private TableColumn<Order, String> colOrderId;
+    @FXML private TableColumn<Order, String> colCustomer;
+    @FXML private TableColumn<Order, String> colAmount;
+    @FXML private TableColumn<Order, String> colStatus;
+
+    private static final DecimalFormat MONEY       = new DecimalFormat("₱#,##0.00");
+    private static final DecimalFormat MONEY_SHORT = new DecimalFormat("₱#,##0");
+    private static final int LOW_STOCK_THRESHOLD   = 5;
 
     @FXML
     public void initialize() {
@@ -60,84 +71,104 @@ public class DashboardController {
         dateLabel.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy")));
     }
 
-    // ─── KPI cards (MOCK DATA) ────────────────────────────────────────────────
+    // ─── KPI cards (LIVE DATA) ────────────────────────────────────────────────
     private void populateKpis() {
-        kpiOrdersToday.setText("34");
-        kpiOrdersDelta.setText("▲ 12% vs yesterday");
-        kpiPending.setText("8");
-        kpiRevenueToday.setText("₱24,380");
-        kpiRevenueMtd.setText("MTD: ₱486,120");
-        kpiLowStock.setText("5");
+        LocalDate today     = LocalDate.now();
+        LocalDate yesterday = today.minusDays(1);
+        LocalDate mtdStart  = today.withDayOfMonth(1);
+
+        int todayCount     = OrderDAO.countOn(today);
+        int yesterdayCount = OrderDAO.countOn(yesterday);
+        int pending        = OrderDAO.countByStatus(OrderStatus.PENDING);
+        BigDecimal revToday = OrderDAO.revenueOn(today);
+        BigDecimal revMtd   = OrderDAO.revenueBetween(mtdStart, today);
+        int lowStock       = ProductDAO.countLowStock(LOW_STOCK_THRESHOLD);
+
+        kpiOrdersToday.setText(String.valueOf(todayCount));
+        kpiOrdersDelta.setText(formatDelta(todayCount, yesterdayCount));
+        styleDelta(kpiOrdersDelta, todayCount - yesterdayCount);
+
+        kpiPending.setText(String.valueOf(pending));
+        kpiRevenueToday.setText(MONEY.format(revToday));
+        kpiRevenueMtd.setText("MTD: " + MONEY_SHORT.format(revMtd));
+        kpiLowStock.setText(String.valueOf(lowStock));
     }
 
-    // ─── Sales trend line (MOCK DATA) ─────────────────────────────────────────
+    private static String formatDelta(int now, int prev) {
+        if (prev == 0) return now == 0 ? "— vs yesterday" : "▲ new today";
+        int diff = now - prev;
+        double pct = (diff * 100.0) / prev;
+        String arrow = diff > 0 ? "▲" : (diff < 0 ? "▼" : "—");
+        return String.format("%s %.0f%% vs yesterday", arrow, Math.abs(pct));
+    }
+
+    private static void styleDelta(Label label, int diff) {
+        label.getStyleClass().removeAll("kpi-delta-up", "kpi-delta-down", "kpi-delta-neutral");
+        if (diff > 0)      label.getStyleClass().add("kpi-delta-up");
+        else if (diff < 0) label.getStyleClass().add("kpi-delta-down");
+        else               label.getStyleClass().add("kpi-delta-neutral");
+    }
+
+    // ─── Sales trend (last 30 days) ───────────────────────────────────────────
     private void populateSalesChart() {
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        Random rng = new Random(42);
         LocalDate today = LocalDate.now();
+        LocalDate from  = today.minusDays(29);
+
+        Map<LocalDate, BigDecimal> series = OrderDAO.salesByDay(from, today);
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("M/d");
-        for (int i = 29; i >= 0; i--) {
-            LocalDate d = today.minusDays(i);
-            int value = 18_000 + rng.nextInt(15_000) + (29 - i) * 120;
-            series.getData().add(new XYChart.Data<>(d.format(fmt), value));
+
+        XYChart.Series<String, Number> data = new XYChart.Series<>();
+        for (Map.Entry<LocalDate, BigDecimal> e : series.entrySet()) {
+            data.getData().add(new XYChart.Data<>(e.getKey().format(fmt), e.getValue()));
         }
-        salesChart.getData().add(series);
+        salesChart.getData().clear();
+        salesChart.getData().add(data);
     }
 
-    // ─── Orders by status pie (MOCK DATA) ─────────────────────────────────────
+    // ─── Orders by status pie ─────────────────────────────────────────────────
     private void populateStatusChart() {
-        statusChart.setData(FXCollections.observableArrayList(
-                new PieChart.Data("Pending",    8),
-                new PieChart.Data("Processing", 14),
-                new PieChart.Data("Shipped",    22),
-                new PieChart.Data("Delivered",  86),
-                new PieChart.Data("Cancelled",  4)
-        ));
+        Map<OrderStatus, Integer> byStatus = OrderDAO.ordersByStatus();
+        var data = FXCollections.<PieChart.Data>observableArrayList();
+        for (Map.Entry<OrderStatus, Integer> e : byStatus.entrySet()) {
+            if (e.getValue() > 0) data.add(new PieChart.Data(e.getKey().label(), e.getValue()));
+        }
+        if (data.isEmpty()) data.add(new PieChart.Data("No orders yet", 1));
+        statusChart.setData(data);
     }
 
-    // ─── Top products bar (MOCK DATA) ─────────────────────────────────────────
+    // ─── Top products this month ──────────────────────────────────────────────
     private void populateTopProducts() {
+        LocalDate today    = LocalDate.now();
+        LocalDate mtdStart = today.withDayOfMonth(1);
+        List<OrderDAO.TopProduct> top = OrderDAO.topProductsBetween(mtdStart, today, 5);
+
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.getData().add(new XYChart.Data<>("Wireless Mouse", 42));
-        series.getData().add(new XYChart.Data<>("USB-C Cable",    38));
-        series.getData().add(new XYChart.Data<>("Notebook A5",    31));
-        series.getData().add(new XYChart.Data<>("Coffee Mug",     27));
-        series.getData().add(new XYChart.Data<>("Desk Lamp",      22));
+        for (OrderDAO.TopProduct p : top) {
+            series.getData().add(new XYChart.Data<>(p.name(), p.sold()));
+        }
+        topProductsChart.getData().clear();
         topProductsChart.getData().add(series);
     }
 
-    // ─── Recent orders mini-table (MOCK DATA) ─────────────────────────────────
+    // ─── Recent orders table ──────────────────────────────────────────────────
     private void populateRecentOrders() {
-        colOrderId.setCellValueFactory( c -> new SimpleStringProperty(c.getValue().orderId()));
-        colCustomer.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().customer()));
-        colAmount.setCellValueFactory(  c -> new SimpleStringProperty(c.getValue().amount()));
-        colStatus.setCellValueFactory(  c -> new SimpleStringProperty(c.getValue().status()));
+        colOrderId.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getOrderCode()));
+        colCustomer.setCellValueFactory(c -> new SimpleStringProperty(
+                c.getValue().getCustomerName() == null ? "—" : c.getValue().getCustomerName()));
+        colAmount.setCellValueFactory(c -> new SimpleStringProperty(MONEY.format(c.getValue().getTotal())));
+        colStatus.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStatus().label()));
 
         colStatus.setCellFactory(tc -> new TableCell<>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
+            @Override protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
-                getStyleClass().removeAll(
-                        "status-pending", "status-processing",
-                        "status-shipped", "status-delivered", "status-cancelled"
-                );
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(item);
-                    getStyleClass().add("status-" + item.toLowerCase());
-                }
+                getStyleClass().removeAll("status-pending", "status-processing",
+                        "status-shipped", "status-delivered", "status-cancelled");
+                if (empty || item == null) { setText(null); return; }
+                setText(item);
+                getStyleClass().add("status-" + item.toLowerCase());
             }
         });
 
-        recentOrdersTable.setItems(FXCollections.observableArrayList(
-                new RecentOrder("ORD-0142", "Juan Dela Cruz", "₱1,250", "Pending"),
-                new RecentOrder("ORD-0141", "Maria Santos",   "₱890",   "Shipped"),
-                new RecentOrder("ORD-0140", "Pedro Reyes",    "₱2,180", "Delivered"),
-                new RecentOrder("ORD-0139", "Ana Cruz",       "₱650",   "Pending"),
-                new RecentOrder("ORD-0138", "Luis Garcia",    "₱3,420", "Processing")
-        ));
+        recentOrdersTable.setItems(FXCollections.observableArrayList(OrderDAO.recent(5)));
     }
-
-    public record RecentOrder(String orderId, String customer, String amount, String status) {}
 }
