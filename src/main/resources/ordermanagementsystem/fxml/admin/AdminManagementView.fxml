@@ -34,6 +34,7 @@
                        promptText="Search by name, username, email, or code…"
                        styleClass="search-field"
                        HBox.hgrow="ALWAYS" />
+            <Label text="Ctrl+K" styleClass="kbd-hint" />
         </HBox>
         <Label text="Role:" styleClass="form-label" />
         <ComboBox fx:id="levelFilter" prefWidth="160" styleClass="form-field" />
@@ -54,7 +55,11 @@
                 <TableColumn fx:id="colActions"   text="Actions"     prefWidth="160" />
             </columns>
             <placeholder>
-                <Label text="No admins match the current filter." styleClass="dashboard-subgreeting" />
+                <VBox styleClass="empty-state">
+                    <FontIcon iconLiteral="fas-user-shield" iconSize="36" iconColor="#cfd2d8" />
+                    <Label text="No admins match your filter" styleClass="empty-state-title" />
+                    <Label text="Try a different search term or reset the role filter." styleClass="empty-state-subtitle" />
+                </VBox>
             </placeholder>
         </TableView>
         <Label fx:id="countLabel" text="0 admins" styleClass="dashboard-subgreeting" />

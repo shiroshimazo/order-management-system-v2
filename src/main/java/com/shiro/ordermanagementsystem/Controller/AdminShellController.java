@@ -9,9 +9,17 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -21,6 +29,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class AdminShellController {
 
@@ -64,6 +73,20 @@ public class AdminShellController {
 
         buildMenu(admin);
         selectNav(AdminNav.DASHBOARD);
+
+        contentArea.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) registerSearchAccelerator(newScene);
+        });
+    }
+
+    private void registerSearchAccelerator(Scene scene) {
+        KeyCombination combo = new KeyCodeCombination(KeyCode.K, KeyCombination.CONTROL_DOWN);
+        scene.getAccelerators().put(combo, () -> {
+            if (contentArea.getChildren().isEmpty()) return;
+            Node view = contentArea.getChildren().get(0);
+            Node target = view.lookup("#searchField");
+            if (target != null) target.requestFocus();
+        });
     }
 
     /** Called from child controllers (e.g. Settings) after profile edits. */
@@ -175,9 +198,35 @@ public class AdminShellController {
         });
     }
 
-    // ─── Logout ───────────────────────────────────────────────────────────────
+    // ─── Logout (with confirmation) ───────────────────────────────────────────
     @FXML
     private void handleLogout() {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.initOwner(logoutButton.getScene().getWindow());
+        confirm.setTitle("Sign Out");
+        confirm.setHeaderText("Sign out of your admin session?");
+        Admin admin = Session.getCurrentAdmin();
+        confirm.setContentText(admin == null
+                ? "You'll be returned to the login screen."
+                : "You'll be returned to the login screen, " + admin.getFullName().split("\\s+")[0] + ".");
+
+        ButtonType signOut = new ButtonType("Sign Out", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancel  = new ButtonType("Cancel",   ButtonBar.ButtonData.CANCEL_CLOSE);
+        confirm.getButtonTypes().setAll(cancel, signOut);
+
+        // Make Cancel the safe default
+        Button cancelBtn = (Button) confirm.getDialogPane().lookupButton(cancel);
+        cancelBtn.setDefaultButton(true);
+        Button signOutBtn = (Button) confirm.getDialogPane().lookupButton(signOut);
+        signOutBtn.setDefaultButton(false);
+
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isEmpty() || result.get() != signOut) return;
+
+        performLogout();
+    }
+
+    private void performLogout() {
         try {
             Session.clear();
             FXMLLoader loader = new FXMLLoader(

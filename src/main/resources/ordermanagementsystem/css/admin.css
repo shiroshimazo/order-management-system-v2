@@ -3,9 +3,28 @@
    Location: src/main/resources/ordermanagementsystem/css/admin.css
    ============================================================ */
 
+/* Design tokens — override on .admin-root or .customer-root for theming */
+.root {
+    -oms-primary:        #D92A1C;
+    -oms-primary-hover:  #B8211A;
+    -oms-primary-tint:   rgba(217, 42, 28, 0.12);
+    -oms-bg:             #f4f5f7;
+    -oms-surface:        #ffffff;
+    -oms-sidebar:        #000000;
+    -oms-text:           #222222;
+    -oms-text-muted:     #666666;
+    -oms-text-subtle:    #999999;
+    -oms-border:         #e5e7eb;
+    -oms-border-soft:    #f0f1f3;
+    -oms-success:        #1f8a3b;
+    -oms-warning:        #d08a00;
+    -oms-danger:         #D92A1C;
+    -oms-info:           #3a72e8;
+}
+
 .admin-root {
     -fx-font-family: "SF Pro Display";
-    -fx-background-color: #f4f5f7;
+    -fx-background-color: -oms-bg;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
@@ -568,6 +587,37 @@
 
 .table-action-button:hover {
     -fx-background-color: #f4f5f7;
+}
+
+/* ═══ EMPTY STATES ═══ */
+.empty-state {
+    -fx-alignment: CENTER;
+    -fx-padding: 36 20 36 20;
+    -fx-spacing: 10;
+}
+
+.empty-state-title {
+    -fx-font-size: 13.5px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #444444;
+}
+
+.empty-state-subtitle {
+    -fx-font-size: 11.5px;
+    -fx-text-fill: #999999;
+}
+
+/* ═══ KEYBOARD HINT ═══ */
+.kbd-hint {
+    -fx-background-color: #f4f5f7;
+    -fx-background-radius: 6;
+    -fx-border-color: #e0e2e8;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-padding: 2 7 2 7;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #888888;
 }
 
 /* ═══ TOAST NOTIFICATIONS ═══ */

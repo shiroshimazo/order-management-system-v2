@@ -2,6 +2,7 @@
 
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
+<?import org.kordamp.ikonli.javafx.*?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
@@ -28,7 +29,11 @@
                 <TableColumn fx:id="colActions" text=""         prefWidth="120" />
             </columns>
             <placeholder>
-                <Label text="You haven't placed any orders yet." styleClass="dashboard-subgreeting" />
+                <VBox styleClass="empty-state">
+                    <FontIcon iconLiteral="fas-receipt" iconSize="36" iconColor="#cfd2d8" />
+                    <Label text="No orders yet" styleClass="empty-state-title" />
+                    <Label text="Your placed orders will show up here." styleClass="empty-state-subtitle" />
+                </VBox>
             </placeholder>
         </TableView>
     </VBox>

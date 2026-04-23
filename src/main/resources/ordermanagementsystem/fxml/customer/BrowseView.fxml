@@ -18,6 +18,7 @@
                        promptText="Search products…"
                        styleClass="search-field"
                        HBox.hgrow="ALWAYS" />
+            <Label text="Ctrl+K" styleClass="kbd-hint" />
         </HBox>
         <Label text="Category:" styleClass="form-label" />
         <ComboBox fx:id="categoryFilter" prefWidth="180" styleClass="form-field" />
@@ -35,7 +36,11 @@
                 <TableColumn fx:id="colActions"    text="Add to Cart" prefWidth="180" />
             </columns>
             <placeholder>
-                <Label text="No products match your search." styleClass="dashboard-subgreeting" />
+                <VBox styleClass="empty-state">
+                    <FontIcon iconLiteral="fas-search" iconSize="36" iconColor="#cfd2d8" />
+                    <Label text="No products match your search" styleClass="empty-state-title" />
+                    <Label text="Try a different keyword or category." styleClass="empty-state-subtitle" />
+                </VBox>
             </placeholder>
         </TableView>
         <Label fx:id="countLabel" text="0 products" styleClass="dashboard-subgreeting" />

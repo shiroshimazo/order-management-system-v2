@@ -42,6 +42,7 @@
                        promptText="Search by name or SKU…"
                        styleClass="search-field"
                        HBox.hgrow="ALWAYS" />
+            <Label text="Ctrl+K" styleClass="kbd-hint" />
         </HBox>
         <Label text="Category:" styleClass="form-label" />
         <ComboBox fx:id="categoryFilter" prefWidth="180" styleClass="form-field" />
@@ -61,7 +62,11 @@
                 <TableColumn fx:id="colActions"    text="Actions"    prefWidth="140" />
             </columns>
             <placeholder>
-                <Label text="No products yet. Click 'Add Product' to create one." styleClass="dashboard-subgreeting" />
+                <VBox styleClass="empty-state">
+                    <FontIcon iconLiteral="fas-box-open" iconSize="36" iconColor="#cfd2d8" />
+                    <Label text="No products yet" styleClass="empty-state-title" />
+                    <Label text="Click 'Add Product' to create your first one." styleClass="empty-state-subtitle" />
+                </VBox>
             </placeholder>
         </TableView>
         <Label fx:id="countLabel" text="0 products" styleClass="dashboard-subgreeting" />

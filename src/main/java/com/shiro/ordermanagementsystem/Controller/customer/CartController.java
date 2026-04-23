@@ -154,7 +154,8 @@ public class CartController {
         ok.setHeaderText("Order placed!");
         ok.showAndWait();
 
-        CustomerHomeController.selectOrdersTab();
+        com.shiro.ordermanagementsystem.Controller.customer.CustomerHomeController.navigate(
+                com.shiro.ordermanagementsystem.nav.CustomerNav.ORDER_HISTORY);
     }
 
     private void showError(String msg) {

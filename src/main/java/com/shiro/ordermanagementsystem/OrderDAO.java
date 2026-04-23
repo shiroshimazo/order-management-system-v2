@@ -1,16 +1,40 @@
 package com.shiro.ordermanagementsystem;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDAO {
 
+    /** Philippine VAT applied on top of the listed price. */
+    public static final BigDecimal VAT_RATE = new BigDecimal("0.12");
+
     private static final String BASE_SELECT =
             "SELECT o.*, uc.full_name AS customer_name " +
             "FROM customer_order o " +
             "LEFT JOIN user_customer uc ON o.customer_id = uc.id ";
+
+    // ─── Schema probing for the `tax` column ──────────────────────────────────
+    private static Boolean hasTaxCol;
+
+    private static void ensureSchemaProbed(Connection conn) throws SQLException {
+        if (hasTaxCol != null) return;
+        boolean tax = false;
+        try (ResultSet rs = conn.getMetaData().getColumns(null, null, "customer_order", null)) {
+            while (rs.next()) {
+                if ("tax".equalsIgnoreCase(rs.getString("COLUMN_NAME"))) tax = true;
+            }
+        }
+        hasTaxCol = tax;
+    }
+
+    /** subtotal × 12%, rounded HALF_UP to 2dp. */
+    public static BigDecimal computeTax(BigDecimal subtotal) {
+        if (subtotal == null) return BigDecimal.ZERO;
+        return subtotal.multiply(VAT_RATE).setScale(2, RoundingMode.HALF_UP);
+    }
 
     // ─── Place order (transaction: header + items + stock decrement) ──────────
     public static Order placeOrder(int customerId, List<CartLine> lines,
@@ -21,6 +45,7 @@ public class OrderDAO {
         Connection conn = null;
         try {
             conn = Databaseconnection.getConnection();
+            ensureSchemaProbed(conn);
             conn.setAutoCommit(false);
 
             // Stock check + compute totals
@@ -32,22 +57,30 @@ public class OrderDAO {
                     throw new SQLException("Not enough stock for '" + fresh.getName() + "'. Only " + fresh.getStock() + " left.");
                 subtotal = subtotal.add(fresh.getPrice().multiply(BigDecimal.valueOf(line.quantity())));
             }
-            BigDecimal total = subtotal; // no tax/shipping for now
+            subtotal = subtotal.setScale(2, RoundingMode.HALF_UP);
+            BigDecimal tax   = computeTax(subtotal);
+            BigDecimal total = subtotal.add(tax);
 
             // Insert header (temporary order_code, patch after we know id)
-            String insertHeader =
-                    "INSERT INTO customer_order " +
-                    "(order_code, customer_id, status, subtotal, total, shipping_address, contact_number, notes) " +
-                    "VALUES (?, ?, 'PENDING', ?, ?, ?, ?, ?)";
+            String insertHeader = hasTaxCol
+                    ? "INSERT INTO customer_order " +
+                      "(order_code, customer_id, status, subtotal, tax, total, shipping_address, contact_number, notes) " +
+                      "VALUES (?, ?, 'PENDING', ?, ?, ?, ?, ?, ?)"
+                    : "INSERT INTO customer_order " +
+                      "(order_code, customer_id, status, subtotal, total, shipping_address, contact_number, notes) " +
+                      "VALUES (?, ?, 'PENDING', ?, ?, ?, ?, ?)";
+
             int orderId;
             try (PreparedStatement hs = conn.prepareStatement(insertHeader, Statement.RETURN_GENERATED_KEYS)) {
-                hs.setString(1, "ORD-TEMP");
-                hs.setInt(2, customerId);
-                hs.setBigDecimal(3, subtotal);
-                hs.setBigDecimal(4, total);
-                setNullable(hs, 5, shippingAddress);
-                setNullable(hs, 6, contactNumber);
-                setNullable(hs, 7, notes);
+                int i = 1;
+                hs.setString(i++, "ORD-TEMP");
+                hs.setInt(i++, customerId);
+                hs.setBigDecimal(i++, subtotal);
+                if (hasTaxCol) hs.setBigDecimal(i++, tax);
+                hs.setBigDecimal(i++, total);
+                setNullable(hs, i++, shippingAddress);
+                setNullable(hs, i++, contactNumber);
+                setNullable(hs, i,   notes);
                 hs.executeUpdate();
                 try (ResultSet keys = hs.getGeneratedKeys()) {
                     keys.next();
@@ -451,6 +484,11 @@ public class OrderDAO {
     private static Order mapRow(ResultSet rs) throws SQLException {
         Timestamp created = rs.getTimestamp("created_at");
         Timestamp updated = rs.getTimestamp("updated_at");
+        BigDecimal tax;
+        try { tax = rs.getBigDecimal("tax"); }
+        catch (SQLException ignored) { tax = BigDecimal.ZERO; }
+        if (tax == null) tax = BigDecimal.ZERO;
+
         return new Order(
                 rs.getInt("id"),
                 rs.getString("order_code"),
@@ -458,6 +496,7 @@ public class OrderDAO {
                 rs.getString("customer_name"),
                 OrderStatus.valueOf(rs.getString("status")),
                 rs.getBigDecimal("subtotal"),
+                tax,
                 rs.getBigDecimal("total"),
                 rs.getString("shipping_address"),
                 rs.getString("contact_number"),

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.shiro.ordermanagementsystem.Controller.customer.FeedbackController"
+            fitToWidth="true"
+            styleClass="dashboard-scroll">
+    <content>
+        <VBox spacing="18" styleClass="dashboard-view">
+
+            <VBox spacing="2">
+                <Label text="Send us feedback" styleClass="dashboard-greeting" />
+                <Label text="Tell us what you loved — or what we can improve." styleClass="dashboard-subgreeting" />
+            </VBox>
+
+            <VBox styleClass="settings-card" spacing="14">
+                <Label text="How was your experience?" styleClass="form-label" />
+                <HBox fx:id="starsRow" spacing="6" alignment="CENTER_LEFT" />
+
+                <Label text="Subject (optional)" styleClass="form-label" />
+                <TextField fx:id="subjectField" promptText="e.g. Loved the bacon burger!" styleClass="form-field" />
+
+                <Label text="Message" styleClass="form-label" />
+                <TextArea fx:id="messageField"
+                          promptText="Share your thoughts…"
+                          prefRowCount="6"
+                          wrapText="true"
+                          styleClass="form-field" />
+
+                <Label fx:id="messageLabel" text="" styleClass="form-message" managed="false" visible="false" />
+
+                <HBox alignment="CENTER_RIGHT">
+                    <Button fx:id="submitButton" text="Submit Feedback"
+                            onAction="#handleSubmit" styleClass="button-primary" />
+                </HBox>
+            </VBox>
+
+            <VBox spacing="8">
+                <Label text="Your previous feedback" styleClass="form-label" />
+                <VBox fx:id="historyList" spacing="10" />
+                <Label fx:id="historyEmpty" text="You haven't submitted feedback yet."
+                       styleClass="dashboard-subgreeting" />
+            </VBox>
+
+        </VBox>
+    </content>
+</ScrollPane>

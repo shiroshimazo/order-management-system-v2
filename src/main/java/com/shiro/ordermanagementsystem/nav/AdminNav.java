@@ -12,6 +12,7 @@ public enum AdminNav {
     PRODUCTS(         "Products",          "fas-box",         "/ordermanagementsystem/fxml/admin/ProductsView.fxml",        false),
     REPORTS(          "Reports",           "fas-chart-line",  "/ordermanagementsystem/fxml/admin/ReportsView.fxml",         false),
     SETTINGS(         "Settings",          "fas-cog",         "/ordermanagementsystem/fxml/admin/SettingsView.fxml",        false),
+    CUSTOMERS(        "Customers",         "fas-users",       "/ordermanagementsystem/fxml/admin/CustomerManagementView.fxml", true),
     ADMIN_MANAGEMENT( "Admin Management",  "fas-user-shield", "/ordermanagementsystem/fxml/admin/AdminManagementView.fxml", true);
 
     private final String  label;

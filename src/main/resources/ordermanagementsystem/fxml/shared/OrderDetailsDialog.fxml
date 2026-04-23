@@ -62,10 +62,20 @@
         </columns>
     </TableView>
 
-    <HBox alignment="CENTER_RIGHT" spacing="12">
-        <Label text="Total:" styleClass="kpi-label" />
-        <Label fx:id="totalLabel" text="₱0.00" styleClass="kpi-value" />
-    </HBox>
+    <VBox spacing="4" alignment="CENTER_RIGHT">
+        <HBox alignment="CENTER_RIGHT" spacing="12">
+            <Label text="Subtotal:" styleClass="form-label" />
+            <Label fx:id="subtotalLabel" text="₱0.00" />
+        </HBox>
+        <HBox alignment="CENTER_RIGHT" spacing="12">
+            <Label text="VAT (12%):" styleClass="form-label" />
+            <Label fx:id="taxLabel" text="₱0.00" />
+        </HBox>
+        <HBox alignment="CENTER_RIGHT" spacing="12">
+            <Label text="Total:" styleClass="kpi-label" />
+            <Label fx:id="totalLabel" text="₱0.00" styleClass="kpi-value" />
+        </HBox>
+    </VBox>
 
     <Separator />
 

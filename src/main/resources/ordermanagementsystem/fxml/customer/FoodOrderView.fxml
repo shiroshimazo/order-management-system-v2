@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.shiro.ordermanagementsystem.Controller.customer.FoodOrderController"
+      spacing="18"
+      styleClass="dashboard-view">
+
+    <!-- ═════ LEFT: catalog ═════ -->
+    <VBox fx:id="catalogColumn" spacing="14" HBox.hgrow="ALWAYS">
+
+        <!-- Toolbar -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <HBox styleClass="search-box" alignment="CENTER_LEFT" spacing="8" HBox.hgrow="ALWAYS">
+                <FontIcon iconLiteral="fas-search" iconSize="13" iconColor="#888888" />
+                <TextField fx:id="searchField"
+                           promptText="Search burgers, drinks…"
+                           styleClass="search-field"
+                           HBox.hgrow="ALWAYS" />
+                <Label text="Ctrl+K" styleClass="kbd-hint" />
+            </HBox>
+            <Button fx:id="toggleCartButton" onAction="#toggleCartPanel" styleClass="button-secondary">
+                <graphic>
+                    <HBox alignment="CENTER_LEFT" spacing="6">
+                        <FontIcon iconLiteral="fas-shopping-bag" iconSize="13" iconColor="#D92A1C" />
+                        <Label fx:id="toggleCartCount" text="0" />
+                    </HBox>
+                </graphic>
+            </Button>
+        </HBox>
+
+        <!-- Category chips -->
+        <HBox fx:id="chipBar" spacing="8" alignment="CENTER_LEFT" />
+
+        <!-- Product grid -->
+        <ScrollPane fx:id="gridScroll"
+                    fitToWidth="true"
+                    styleClass="dashboard-scroll"
+                    VBox.vgrow="ALWAYS">
+            <content>
+                <FlowPane fx:id="productGrid"
+                          hgap="14"
+                          vgap="14"
+                          prefWrapLength="600"
+                          rowValignment="TOP" />
+            </content>
+        </ScrollPane>
+
+        <Label fx:id="emptyLabel" text="No products match your search." styleClass="dashboard-subgreeting"
+               managed="false" visible="false" />
+    </VBox>
+
+    <!-- ═════ RIGHT: cart / invoice ═════ -->
+    <VBox fx:id="cartPanel" spacing="12" styleClass="invoice-panel">
+        <HBox alignment="CENTER_LEFT" spacing="8">
+            <FontIcon iconLiteral="fas-receipt" iconSize="14" iconColor="#D92A1C" />
+            <Label text="Your Order" styleClass="invoice-title" HBox.hgrow="ALWAYS" />
+            <Button fx:id="closeCartButton" onAction="#hideCartPanel" styleClass="qty-stepper-button"
+                    visible="false" managed="false">
+                <graphic><FontIcon iconLiteral="fas-times" iconSize="12" iconColor="#666666" /></graphic>
+            </Button>
+        </HBox>
+        <Separator />
+
+        <ScrollPane fitToWidth="true" prefHeight="240"
+                    styleClass="dashboard-scroll" VBox.vgrow="ALWAYS">
+            <content>
+                <VBox fx:id="cartLines" spacing="0" />
+            </content>
+        </ScrollPane>
+
+        <Label fx:id="cartEmptyLabel"
+               text="Your cart is empty. Tap any item to add it."
+               styleClass="dashboard-subgreeting"
+               wrapText="true" />
+
+        <Separator />
+
+        <!-- Summary -->
+        <VBox spacing="6">
+            <HBox alignment="CENTER_LEFT">
+                <Label text="Subtotal" styleClass="invoice-summary-label" HBox.hgrow="ALWAYS" />
+                <Label fx:id="subtotalLabel" text="₱0.00" styleClass="invoice-summary-value" />
+            </HBox>
+            <HBox alignment="CENTER_LEFT">
+                <Label text="VAT (12%)" styleClass="invoice-summary-label" HBox.hgrow="ALWAYS" />
+                <Label fx:id="vatLabel" text="₱0.00" styleClass="invoice-summary-value" />
+            </HBox>
+            <HBox alignment="CENTER_LEFT">
+                <Label text="Total" styleClass="invoice-total-label" HBox.hgrow="ALWAYS" />
+                <Label fx:id="totalLabel" text="₱0.00" styleClass="invoice-total-value" />
+            </HBox>
+        </VBox>
+
+        <!-- Delivery details -->
+        <Separator />
+        <Label text="Delivery Details" styleClass="form-label" />
+        <TextField fx:id="addressField" promptText="Street, Barangay, City, Province" styleClass="form-field" />
+        <TextField fx:id="contactField" promptText="+63 9XX XXX XXXX" styleClass="form-field" />
+        <TextArea  fx:id="notesField"
+                   promptText="Notes (optional)"
+                   prefRowCount="2"
+                   wrapText="true"
+                   styleClass="form-field" />
+
+        <Label fx:id="messageLabel" text="" styleClass="form-message" managed="false" visible="false" />
+
+        <HBox spacing="8">
+            <Button text="Clear" onAction="#handleClear" styleClass="button-secondary" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+            <Button fx:id="checkoutButton" text="Place Order" onAction="#handleCheckout"
+                    styleClass="button-primary" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+        </HBox>
+    </VBox>
+
+</HBox>

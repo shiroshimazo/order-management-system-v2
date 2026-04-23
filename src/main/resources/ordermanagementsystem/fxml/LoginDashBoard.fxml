@@ -33,7 +33,7 @@
                   spacing="0"
                   prefHeight="44"
                   styleClass="input-row">
-                <FontIcon iconLiteral="far-user"
+                <FontIcon iconLiteral="fas-user"
                           iconSize="14"
                           iconColor="#bbbbbb" />
                 <TextField fx:id="usernameField"

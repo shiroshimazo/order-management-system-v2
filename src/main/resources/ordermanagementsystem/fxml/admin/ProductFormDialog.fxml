@@ -52,6 +52,16 @@
             <Label text="Stock *" styleClass="form-label" />
             <TextField fx:id="stockField" promptText="0" styleClass="form-field" />
         </VBox>
+
+        <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="4">
+            <Label text="Original Price (optional)" styleClass="form-label" />
+            <TextField fx:id="originalPriceField" promptText="for strike-through display" styleClass="form-field" />
+        </VBox>
+
+        <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <Label text="Image" styleClass="form-label" />
+            <TextField fx:id="imageUrlField" promptText="URL or local path" styleClass="form-field" />
+        </VBox>
     </GridPane>
 
     <CheckBox fx:id="activeCheck" text="Active (visible in catalog)" selected="true" />

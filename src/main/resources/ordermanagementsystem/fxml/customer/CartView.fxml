@@ -2,6 +2,7 @@
 
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
+<?import org.kordamp.ikonli.javafx.*?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
@@ -22,7 +23,11 @@
                 <TableColumn fx:id="colActions"  text=""         prefWidth="80" />
             </columns>
             <placeholder>
-                <Label text="Your cart is empty." styleClass="dashboard-subgreeting" />
+                <VBox styleClass="empty-state">
+                    <FontIcon iconLiteral="fas-shopping-cart" iconSize="36" iconColor="#cfd2d8" />
+                    <Label text="Your cart is empty" styleClass="empty-state-title" />
+                    <Label text="Head back to Browse and add some products." styleClass="empty-state-subtitle" />
+                </VBox>
             </placeholder>
         </TableView>
 

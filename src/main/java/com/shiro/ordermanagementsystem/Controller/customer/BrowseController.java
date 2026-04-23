@@ -70,7 +70,8 @@ public class BrowseController {
                         return;
                     }
                     Cart.add(p, q);
-                    CustomerHomeController.selectCartTab();
+                    com.shiro.ordermanagementsystem.Controller.customer.CustomerHomeController.navigate(
+                            com.shiro.ordermanagementsystem.nav.CustomerNav.FOOD_ORDER);
                 });
             }
 

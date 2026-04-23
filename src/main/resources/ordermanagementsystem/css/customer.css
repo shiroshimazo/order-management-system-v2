@@ -1,55 +1,262 @@
 /* ============================================================
-   customer.css — Customer shell overrides
-   Loaded alongside admin.css for shared styles.
+   customer.css — Customer storefront styles
+   Loaded alongside admin.css for shared design tokens.
    ============================================================ */
 
 .customer-root {
     -fx-font-family: "SF Pro Display";
-    -fx-background-color: #f4f5f7;
+    -fx-background-color: -oms-bg;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
 
+/* ═══ HERO (Dashboard) ═══ */
+.hero-card {
+    -fx-background-color: linear-gradient(to right, #D92A1C, #ff6b3d);
+    -fx-background-radius: 16;
+    -fx-padding: 28 28 28 28;
+    -fx-effect: dropshadow(gaussian, rgba(217,42,28,0.25), 24, 0, 0, 6);
+}
+
+.hero-eyebrow {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-opacity: 0.85;
+}
+
+.hero-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+.hero-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #ffffff;
+    -fx-opacity: 0.92;
+    -fx-wrap-text: true;
+}
+
+.hero-cta {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #D92A1C;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20 10 20;
+    -fx-background-radius: 22;
+    -fx-cursor: hand;
+}
+.hero-cta:hover {
+    -fx-background-color: #ffeeec;
+}
+
+/* ═══ CATEGORY CHIPS (Food Order) ═══ */
+.category-chip {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #444444;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 18 8 18;
+    -fx-background-radius: 22;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1;
+    -fx-border-radius: 22;
+    -fx-cursor: hand;
+}
+.category-chip:hover {
+    -fx-background-color: #fff2f0;
+    -fx-border-color: #f4a8a0;
+}
+.category-chip-active {
+    -fx-background-color: #D92A1C;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #D92A1C;
+}
+
+/* ═══ PRODUCT CARD ═══ */
+.product-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 14;
+    -fx-padding: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 14, 0, 0, 3);
+    -fx-cursor: hand;
+}
+.product-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(217,42,28,0.20), 18, 0, 0, 5);
+}
+
+.product-image-wrap {
+    -fx-background-color: #f6f7f9;
+    -fx-background-radius: 14 14 0 0;
+    -fx-min-height: 140;
+    -fx-pref-height: 140;
+    -fx-alignment: CENTER;
+}
+
+.product-name {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222222;
+    -fx-wrap-text: true;
+}
+
+.product-desc {
+    -fx-font-size: 11px;
+    -fx-text-fill: #888888;
+    -fx-wrap-text: true;
+}
+
+.product-price {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #D92A1C;
+}
+
+.product-price-strike {
+    -fx-font-size: 11px;
+    -fx-text-fill: #999999;
+    -fx-strikethrough: true;
+}
+
+.rating-star {
+    -fx-text-fill: #f0a020;
+}
+
+.rating-text {
+    -fx-font-size: 11px;
+    -fx-text-fill: #555555;
+    -fx-font-weight: bold;
+}
+
+.rating-count {
+    -fx-font-size: 10px;
+    -fx-text-fill: #999999;
+}
+
+.product-stock-low {
+    -fx-font-size: 10px;
+    -fx-text-fill: #d08a00;
+    -fx-font-weight: bold;
+}
+
+.product-stock-out {
+    -fx-font-size: 10px;
+    -fx-text-fill: #999999;
+    -fx-font-weight: bold;
+}
+
+.add-to-cart-button {
+    -fx-background-color: #D92A1C;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 14 8 14;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+.add-to-cart-button:hover {
+    -fx-background-color: #B8211A;
+}
+.add-to-cart-button:disabled {
+    -fx-background-color: #cccccc;
+    -fx-text-fill: #ffffff;
+    -fx-opacity: 1;
+}
+
+/* ═══ INVOICE / CART PANEL ═══ */
+.invoice-panel {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 14;
+    -fx-padding: 18;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 14, 0, 0, 2);
+    -fx-min-width: 320;
+    -fx-pref-width: 340;
+}
+
+.invoice-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222222;
+}
+
+.invoice-line {
+    -fx-padding: 8 0 8 0;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.invoice-line-name {
+    -fx-font-size: 12px;
+    -fx-text-fill: #333333;
+    -fx-font-weight: bold;
+}
+
+.invoice-line-meta {
+    -fx-font-size: 11px;
+    -fx-text-fill: #888888;
+}
+
+.invoice-summary-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #666666;
+}
+
+.invoice-summary-value {
+    -fx-font-size: 12px;
+    -fx-text-fill: #222222;
+    -fx-font-weight: bold;
+}
+
+.invoice-total-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #222222;
+    -fx-font-weight: bold;
+}
+
+.invoice-total-value {
+    -fx-font-size: 18px;
+    -fx-text-fill: #D92A1C;
+    -fx-font-weight: bold;
+}
+
+.qty-stepper-button {
+    -fx-background-color: #f4f5f7;
+    -fx-background-radius: 8;
+    -fx-min-width: 26;
+    -fx-min-height: 26;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+.qty-stepper-button:hover {
+    -fx-background-color: #fff2f0;
+}
+
+.qty-stepper-value {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-min-width: 24;
+    -fx-alignment: CENTER;
+}
+
+/* ═══ BUTTONS ═══ */
+.button-secondary {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #444444;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 8 14 8 14;
+    -fx-cursor: hand;
+}
+.button-secondary:hover {
+    -fx-background-color: #f6f7f9;
+}
+
+/* legacy tabs (kept for any leftover view) */
 .customer-tabs {
     -fx-tab-min-height: 36;
     -fx-tab-max-height: 36;
     -fx-padding: 10 24 0 24;
 }
-
-.customer-tabs .tab-header-background {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent transparent #e5e7eb transparent;
-    -fx-border-width: 0 0 1 0;
-}
-
-.customer-tabs .tab {
-    -fx-background-color: transparent;
-    -fx-padding: 6 18 6 18;
-    -fx-background-radius: 0;
-}
-
-.customer-tabs .tab:selected {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent transparent #D92A1C transparent;
-    -fx-border-width: 0 0 2 0;
-}
-
-.customer-tabs .tab .tab-label {
-    -fx-text-fill: #888888;
-    -fx-font-size: 13px;
-    -fx-font-weight: bold;
-}
-
-.customer-tabs .tab:selected .tab-label {
-    -fx-text-fill: #D92A1C;
-}
-
-.customer-tabs .tab:focused {
-    -fx-focus-color: transparent;
-    -fx-faint-focus-color: transparent;
-}
-
-.customer-tabs .tab-content-area {
-    -fx-background-color: #f4f5f7;
-    -fx-padding: 20 24 20 24;
-}
+.customer-tabs .tab-header-background { -fx-background-color: transparent; }

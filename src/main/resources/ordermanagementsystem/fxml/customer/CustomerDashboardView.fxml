@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.shiro.ordermanagementsystem.Controller.customer.CustomerDashboardController"
+            fitToWidth="true"
+            styleClass="dashboard-scroll">
+    <content>
+        <VBox spacing="20" styleClass="dashboard-view">
+
+            <!-- Hero -->
+            <HBox styleClass="hero-card" alignment="CENTER_LEFT" spacing="16">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label fx:id="greetingEyebrow" text="HELLO" styleClass="hero-eyebrow" />
+                    <Label fx:id="greetingTitle"   text="What are you craving today?" styleClass="hero-title" wrapText="true" />
+                    <Label text="Hot, juicy burgers and ice-cold drinks — delivered fast." styleClass="hero-subtitle" wrapText="true" />
+                    <HBox spacing="10">
+                        <Button text="Order Now" onAction="#goToFoodOrder" styleClass="hero-cta" />
+                    </HBox>
+                </VBox>
+                <FontIcon iconLiteral="fas-hamburger" iconSize="80" iconColor="#ffffff" />
+            </HBox>
+
+            <!-- Quick stats -->
+            <HBox spacing="14">
+                <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" spacing="6">
+                    <Label text="ACTIVE ORDERS" styleClass="kpi-label" />
+                    <Label fx:id="activeOrdersLabel" text="0" styleClass="kpi-value" />
+                </VBox>
+                <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" spacing="6">
+                    <Label text="TOTAL ORDERS" styleClass="kpi-label" />
+                    <Label fx:id="totalOrdersLabel" text="0" styleClass="kpi-value" />
+                </VBox>
+                <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" spacing="6">
+                    <Label text="LIFETIME SPEND" styleClass="kpi-label" />
+                    <Label fx:id="lifetimeLabel" text="₱0.00" styleClass="kpi-value" />
+                </VBox>
+            </HBox>
+
+            <!-- Featured -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="Top Picks" styleClass="section-title" HBox.hgrow="ALWAYS" />
+                <Button text="See all →" onAction="#goToFoodOrder" styleClass="button-secondary" />
+            </HBox>
+            <FlowPane fx:id="featuredGrid" hgap="14" vgap="14" prefWrapLength="600" rowValignment="TOP" />
+
+        </VBox>
+    </content>
+</ScrollPane>

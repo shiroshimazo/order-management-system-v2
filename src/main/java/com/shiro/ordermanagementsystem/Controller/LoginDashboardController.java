@@ -136,7 +136,7 @@ public class LoginDashboardController {
     }
 
     private void navigateToCustomer(String fxmlPath, double width, double height) {
-        navigateToShell(fxmlPath, width, height, 900, 640);
+        navigateToShell(fxmlPath, width, height, 360, 600);
     }
 
     private void navigateToShell(String fxmlPath, double width, double height,

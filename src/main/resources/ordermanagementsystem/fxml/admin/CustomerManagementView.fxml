@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.shiro.ordermanagementsystem.Controller.admin.CustomerManagementController"
+      spacing="16"
+      styleClass="dashboard-view">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="12">
+        <VBox spacing="2" HBox.hgrow="ALWAYS">
+            <Label text="Customers" styleClass="dashboard-greeting" />
+            <Label text="Manage customer accounts — edit details, reset passwords, archive inactive users" styleClass="dashboard-subgreeting" />
+        </VBox>
+        <Button onAction="#handleAddCustomer" styleClass="button-primary">
+            <graphic>
+                <HBox alignment="CENTER_LEFT" spacing="6">
+                    <FontIcon iconLiteral="fas-user-plus" iconSize="12" iconColor="#ffffff" />
+                    <Label text="Add Customer" style="-fx-text-fill: #ffffff;" />
+                </HBox>
+            </graphic>
+        </Button>
+    </HBox>
+
+    <!-- Toolbar -->
+    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="toolbar">
+        <HBox styleClass="search-box" alignment="CENTER_LEFT" spacing="8" HBox.hgrow="ALWAYS">
+            <FontIcon iconLiteral="fas-search" iconSize="13" iconColor="#888888" />
+            <TextField fx:id="searchField"
+                       promptText="Search by username, name, email, or phone…"
+                       styleClass="search-field"
+                       HBox.hgrow="ALWAYS" />
+            <Label text="Ctrl+K" styleClass="kbd-hint" />
+        </HBox>
+        <Label text="Status:" styleClass="form-label" />
+        <ComboBox fx:id="statusFilter" prefWidth="150" styleClass="form-field" />
+        <Button text="Refresh" onAction="#handleRefresh" styleClass="button-secondary" />
+    </HBox>
+
+    <!-- Table card -->
+    <VBox styleClass="chart-card" spacing="8" VBox.vgrow="ALWAYS">
+        <TableView fx:id="customersTable" styleClass="mini-table" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colUsername" text="Username"    prefWidth="130" />
+                <TableColumn fx:id="colName"     text="Full Name"   prefWidth="180" />
+                <TableColumn fx:id="colEmail"    text="Email"       prefWidth="200" />
+                <TableColumn fx:id="colPhone"    text="Phone"       prefWidth="130" />
+                <TableColumn fx:id="colOrders"   text="Orders"      prefWidth="80" />
+                <TableColumn fx:id="colSpent"    text="Total Spent" prefWidth="120" />
+                <TableColumn fx:id="colStatus"   text="Status"      prefWidth="100" />
+                <TableColumn fx:id="colJoined"   text="Joined"      prefWidth="130" />
+                <TableColumn fx:id="colActions"  text="Actions"     prefWidth="160" />
+            </columns>
+            <placeholder>
+                <VBox styleClass="empty-state">
+                    <FontIcon iconLiteral="fas-users" iconSize="36" iconColor="#cfd2d8" />
+                    <Label text="No customers match your filter" styleClass="empty-state-title" />
+                    <Label text="Try a different search term or reset the status filter." styleClass="empty-state-subtitle" />
+                </VBox>
+            </placeholder>
+        </TableView>
+        <Label fx:id="countLabel" text="0 customers" styleClass="dashboard-subgreeting" />
+    </VBox>
+
+</VBox>

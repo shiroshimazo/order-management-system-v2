@@ -2,6 +2,7 @@
 
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
+<?import org.kordamp.ikonli.javafx.*?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
@@ -47,7 +48,11 @@
             <TableColumn fx:id="colActions"     text="Actions"     prefWidth="110" />
         </columns>
         <placeholder>
-            <Label text="No categories yet." styleClass="dashboard-subgreeting" />
+            <VBox styleClass="empty-state">
+                <FontIcon iconLiteral="fas-tags" iconSize="28" iconColor="#cfd2d8" />
+                <Label text="No categories yet" styleClass="empty-state-title" />
+                <Label text="Add your first category using the form above." styleClass="empty-state-subtitle" />
+            </VBox>
         </placeholder>
     </TableView>
 

@@ -110,7 +110,11 @@
                     <TableColumn fx:id="colRevenue" text="Revenue" prefWidth="130" />
                 </columns>
                 <placeholder>
-                    <Label text="No sales in the selected range." styleClass="dashboard-subgreeting" />
+                    <VBox styleClass="empty-state">
+                        <FontIcon iconLiteral="fas-chart-line" iconSize="36" iconColor="#cfd2d8" />
+                        <Label text="No sales in this range" styleClass="empty-state-title" />
+                        <Label text="Pick a wider date range or try a quick preset above." styleClass="empty-state-subtitle" />
+                    </VBox>
                 </placeholder>
             </TableView>
         </VBox>

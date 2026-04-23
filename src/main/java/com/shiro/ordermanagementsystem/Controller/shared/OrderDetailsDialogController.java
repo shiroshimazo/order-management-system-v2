@@ -23,6 +23,8 @@ public class OrderDetailsDialogController {
     @FXML private Label contactLabel;
     @FXML private Label addressLabel;
     @FXML private Label notesLabel;
+    @FXML private Label subtotalLabel;
+    @FXML private Label taxLabel;
     @FXML private Label totalLabel;
 
     @FXML private TableView<OrderItem>           itemsTable;
@@ -80,6 +82,8 @@ public class OrderDetailsDialogController {
         notesLabel.setText(order.getNotes() == null || order.getNotes().isBlank() ? "—" : order.getNotes());
 
         itemsTable.setItems(FXCollections.observableArrayList(order.getItems()));
+        subtotalLabel.setText(MONEY.format(order.getSubtotal()));
+        taxLabel.setText(MONEY.format(order.getTax()));
         totalLabel.setText(MONEY.format(order.getTotal()));
 
         adminControls.setManaged(adminMode);

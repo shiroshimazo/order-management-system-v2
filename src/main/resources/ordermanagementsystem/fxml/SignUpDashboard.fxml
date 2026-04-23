@@ -32,7 +32,7 @@
                   spacing="0"
                   prefHeight="44"
                   styleClass="input-row">
-                <FontIcon iconLiteral="far-user"
+                <FontIcon iconLiteral="fas-user"
                           iconSize="14"
                           iconColor="#bbbbbb" />
                 <TextField fx:id="usernameField"
@@ -50,7 +50,7 @@
                   spacing="0"
                   prefHeight="44"
                   styleClass="input-row">
-                <FontIcon iconLiteral="far-id-card"
+                <FontIcon iconLiteral="fas-id-card"
                           iconSize="14"
                           iconColor="#bbbbbb" />
                 <TextField fx:id="fullNameField"
@@ -68,7 +68,7 @@
                   spacing="0"
                   prefHeight="44"
                   styleClass="input-row">
-                <FontIcon iconLiteral="far-envelope"
+                <FontIcon iconLiteral="fas-envelope"
                           iconSize="14"
                           iconColor="#bbbbbb" />
                 <TextField fx:id="emailField"
