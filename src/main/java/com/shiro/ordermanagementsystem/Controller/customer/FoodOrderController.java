@@ -263,9 +263,6 @@ public class FoodOrderController {
         card.getStyleClass().add("product-card");
         card.setPrefWidth(240);
         card.setMaxWidth(240);
-        card.setOnMouseClicked(e -> {
-            if (p.getStock() > 0) Cart.add(p, 1);
-        });
         return card;
     }
 
@@ -372,6 +369,33 @@ public class FoodOrderController {
 
         if (address.isEmpty()) { showError("Shipping address is required."); return; }
         if (contact.isEmpty()) { showError("Contact number is required."); return; }
+
+        BigDecimal subtotal = Cart.total().setScale(2, java.math.RoundingMode.HALF_UP);
+        BigDecimal vat      = OrderDAO.computeTax(subtotal);
+        BigDecimal total    = subtotal.add(vat);
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.initOwner(checkoutButton.getScene().getWindow());
+        confirm.setTitle("Confirm Order");
+        confirm.setHeaderText("Place this order?");
+        confirm.setContentText(
+                "Items: "    + Cart.itemCount() + "\n" +
+                "Subtotal: " + MONEY.format(subtotal) + "\n" +
+                "VAT (12%): " + MONEY.format(vat) + "\n" +
+                "Total: "    + MONEY.format(total) + "\n\n" +
+                "Deliver to:\n" + address + "\nContact: " + contact);
+
+        ButtonType place  = new ButtonType("Place Order", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancel = new ButtonType("Cancel",      ButtonBar.ButtonData.CANCEL_CLOSE);
+        confirm.getButtonTypes().setAll(cancel, place);
+
+        Button cancelBtn = (Button) confirm.getDialogPane().lookupButton(cancel);
+        cancelBtn.setDefaultButton(true);
+        Button placeBtn  = (Button) confirm.getDialogPane().lookupButton(place);
+        placeBtn.setDefaultButton(false);
+
+        java.util.Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isEmpty() || result.get() != place) return;
 
         List<OrderDAO.CartLine> payload = new ArrayList<>();
         for (Cart.Line l : Cart.lines()) payload.add(new OrderDAO.CartLine(l.product.getId(), l.quantity));
