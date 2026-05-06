@@ -9,6 +9,7 @@ import com.shiro.ordermanagementsystem.Product;
 import com.shiro.ordermanagementsystem.ProductDAO;
 import com.shiro.ordermanagementsystem.session.Cart;
 import com.shiro.ordermanagementsystem.session.Session;
+import com.shiro.ordermanagementsystem.ui.ProductImages;
 import com.shiro.ordermanagementsystem.ui.Toast;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -177,18 +178,14 @@ public class FoodOrderController {
         // Image
         StackPane imageWrap = new StackPane();
         imageWrap.getStyleClass().add("product-image-wrap");
-        if (p.getImageUrl() != null && !p.getImageUrl().isBlank()) {
-            try {
-                Image img = new Image(p.getImageUrl(), 220, 140, true, true, true);
-                ImageView iv = new ImageView(img);
-                iv.setFitWidth(220);
-                iv.setFitHeight(140);
-                iv.setPreserveRatio(true);
-                iv.setSmooth(true);
-                imageWrap.getChildren().add(iv);
-            } catch (Exception ex) {
-                imageWrap.getChildren().add(placeholderIcon());
-            }
+        Image img = ProductImages.load(p.getImageUrl(), 220, 140);
+        if (img != null) {
+            ImageView iv = new ImageView(img);
+            iv.setFitWidth(220);
+            iv.setFitHeight(140);
+            iv.setPreserveRatio(true);
+            iv.setSmooth(true);
+            imageWrap.getChildren().add(iv);
         } else {
             imageWrap.getChildren().add(placeholderIcon());
         }

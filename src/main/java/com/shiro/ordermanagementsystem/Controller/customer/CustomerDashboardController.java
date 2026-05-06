@@ -9,6 +9,7 @@ import com.shiro.ordermanagementsystem.ProductDAO;
 import com.shiro.ordermanagementsystem.nav.CustomerNav;
 import com.shiro.ordermanagementsystem.session.Cart;
 import com.shiro.ordermanagementsystem.session.Session;
+import com.shiro.ordermanagementsystem.ui.ProductImages;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -90,16 +91,13 @@ public class CustomerDashboardController {
     private VBox buildFeaturedCard(Product p) {
         StackPane imageWrap = new StackPane();
         imageWrap.getStyleClass().add("product-image-wrap");
-        if (p.getImageUrl() != null && !p.getImageUrl().isBlank()) {
-            try {
-                ImageView iv = new ImageView(new Image(p.getImageUrl(), 220, 140, true, true, true));
-                iv.setFitWidth(220);
-                iv.setFitHeight(140);
-                iv.setPreserveRatio(true);
-                imageWrap.getChildren().add(iv);
-            } catch (Exception e) {
-                imageWrap.getChildren().add(placeholder());
-            }
+        Image img = ProductImages.load(p.getImageUrl(), 220, 140);
+        if (img != null) {
+            ImageView iv = new ImageView(img);
+            iv.setFitWidth(220);
+            iv.setFitHeight(140);
+            iv.setPreserveRatio(true);
+            imageWrap.getChildren().add(iv);
         } else {
             imageWrap.getChildren().add(placeholder());
         }
