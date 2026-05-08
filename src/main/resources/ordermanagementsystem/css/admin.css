@@ -226,6 +226,27 @@
     -fx-text-fill: #888888;
 }
 
+.dashboard-refresh-button {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 8;
+    -fx-border-color: #e3e6ea;
+    -fx-border-radius: 8;
+    -fx-padding: 8 14 8 12;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.dashboard-refresh-button:hover {
+    -fx-background-color: #fdf3f2;
+    -fx-border-color: #f1bdb8;
+}
+
+.dashboard-refresh-button:pressed {
+    -fx-background-color: #f8e5e2;
+}
+
 /* ── KPI Cards ── */
 .kpi-card {
     -fx-background-color: #ffffff;

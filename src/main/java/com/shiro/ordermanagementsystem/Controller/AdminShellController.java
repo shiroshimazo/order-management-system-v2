@@ -147,8 +147,7 @@ public class AdminShellController {
 
     // ─── Select / swap content ────────────────────────────────────────────────
     private void selectNav(AdminNav nav) {
-        if (nav == activeNav) return;
-
+        // Re-clicking the same nav reloads the panel (so data refreshes from DB).
         menuButtons.forEach((key, btn) -> {
             btn.getStyleClass().remove("menu-button-active");
             if (key == nav) btn.getStyleClass().add("menu-button-active");

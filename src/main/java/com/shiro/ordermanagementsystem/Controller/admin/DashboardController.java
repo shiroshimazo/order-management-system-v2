@@ -28,13 +28,17 @@ public class DashboardController {
 
     @FXML private Label greetingLabel;
     @FXML private Label dateLabel;
+    @FXML private javafx.scene.control.Button refreshButton;
 
     @FXML private Label kpiOrdersToday;
     @FXML private Label kpiOrdersDelta;
     @FXML private Label kpiPending;
+    @FXML private Label kpiPendingSub;
     @FXML private Label kpiRevenueToday;
     @FXML private Label kpiRevenueMtd;
     @FXML private Label kpiLowStock;
+    @FXML private Label kpiLowStockSub;
+    @FXML private org.kordamp.ikonli.javafx.FontIcon kpiLowStockIcon;
 
     @FXML private LineChart<String, Number> salesChart;
     @FXML private PieChart                  statusChart;
@@ -53,6 +57,15 @@ public class DashboardController {
     @FXML
     public void initialize() {
         populateGreeting();
+        reloadAll();
+    }
+
+    @FXML
+    private void handleRefresh() {
+        reloadAll();
+    }
+
+    private void reloadAll() {
         populateKpis();
         populateSalesChart();
         populateStatusChart();
@@ -89,9 +102,38 @@ public class DashboardController {
         styleDelta(kpiOrdersDelta, todayCount - yesterdayCount);
 
         kpiPending.setText(String.valueOf(pending));
+        if (pending == 0) {
+            kpiPendingSub.setText("All caught up");
+            stylePill(kpiPendingSub, "up");
+        } else {
+            kpiPendingSub.setText("Needs attention");
+            stylePill(kpiPendingSub, "neutral");
+        }
+
         kpiRevenueToday.setText(MONEY.format(revToday));
         kpiRevenueMtd.setText("MTD: " + MONEY_SHORT.format(revMtd));
+
         kpiLowStock.setText(String.valueOf(lowStock));
+        if (lowStock == 0) {
+            kpiLowStockSub.setText("All stocked up");
+            stylePill(kpiLowStockSub, "up");
+            kpiLowStockIcon.setIconLiteral("fas-check-circle");
+            kpiLowStockIcon.setIconColor(javafx.scene.paint.Color.web("#1f8a3b"));
+        } else {
+            kpiLowStockSub.setText("Products need restock");
+            stylePill(kpiLowStockSub, "down");
+            kpiLowStockIcon.setIconLiteral("fas-exclamation-triangle");
+            kpiLowStockIcon.setIconColor(javafx.scene.paint.Color.web("#D92A1C"));
+        }
+    }
+
+    private static void stylePill(Label lbl, String tone) {
+        lbl.getStyleClass().removeAll("kpi-delta-up", "kpi-delta-down", "kpi-delta-neutral");
+        switch (tone) {
+            case "up"   -> lbl.getStyleClass().add("kpi-delta-up");
+            case "down" -> lbl.getStyleClass().add("kpi-delta-down");
+            default     -> lbl.getStyleClass().add("kpi-delta-neutral");
+        }
     }
 
     private static String formatDelta(int now, int prev) {

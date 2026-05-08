@@ -8,6 +8,7 @@ import javafx.scene.text.Font;
 
 public class MainApp extends Application {
 
+
     @Override
     public void start(Stage stage) throws Exception {
         // Load SF Pro Display fonts (must come BEFORE FXMLLoader)

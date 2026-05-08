@@ -14,11 +14,22 @@
 
     <VBox spacing="20" styleClass="dashboard-view">
 
-        <!-- Greeting -->
-        <VBox spacing="2">
-            <Label fx:id="greetingLabel" text="Welcome back!" styleClass="dashboard-greeting" />
-            <Label fx:id="dateLabel"     text=""              styleClass="dashboard-subgreeting" />
-        </VBox>
+        <!-- Greeting + Refresh -->
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <VBox spacing="2" HBox.hgrow="ALWAYS">
+                <Label fx:id="greetingLabel" text="Welcome back!" styleClass="dashboard-greeting" />
+                <Label fx:id="dateLabel"     text=""              styleClass="dashboard-subgreeting" />
+            </VBox>
+            <Button fx:id="refreshButton" onAction="#handleRefresh"
+                    styleClass="dashboard-refresh-button">
+                <graphic>
+                    <HBox alignment="CENTER" spacing="6">
+                        <FontIcon iconLiteral="fas-sync-alt" iconSize="13" iconColor="#D92A1C" />
+                        <Label text="Refresh" style="-fx-text-fill: #D92A1C;"/>
+                    </HBox>
+                </graphic>
+            </Button>
+        </HBox>
 
         <!-- KPI Row -->
         <HBox spacing="16" styleClass="kpi-row">
@@ -36,8 +47,8 @@
                     <FontIcon iconLiteral="fas-clock" iconSize="16" iconColor="#f0a020" />
                     <Label text="Pending Orders" styleClass="kpi-label" />
                 </HBox>
-                <Label fx:id="kpiPending" text="0" styleClass="kpi-value" />
-                <Label text="Needs attention" styleClass="kpi-delta-neutral" />
+                <Label fx:id="kpiPending"    text="0"               styleClass="kpi-value" />
+                <Label fx:id="kpiPendingSub" text="Needs attention" styleClass="kpi-delta-neutral" />
             </VBox>
 
             <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" spacing="8">
@@ -51,11 +62,12 @@
 
             <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" spacing="8">
                 <HBox alignment="CENTER_LEFT" spacing="8">
-                    <FontIcon iconLiteral="fas-exclamation-triangle" iconSize="16" iconColor="#D92A1C" />
+                    <FontIcon fx:id="kpiLowStockIcon" iconLiteral="fas-exclamation-triangle"
+                              iconSize="16" iconColor="#D92A1C" />
                     <Label text="Low Stock" styleClass="kpi-label" />
                 </HBox>
-                <Label fx:id="kpiLowStock" text="0" styleClass="kpi-value" />
-                <Label text="Products need restock" styleClass="kpi-delta-down" />
+                <Label fx:id="kpiLowStock"    text="0"                     styleClass="kpi-value" />
+                <Label fx:id="kpiLowStockSub" text="Products need restock" styleClass="kpi-delta-down" />
             </VBox>
         </HBox>
 
