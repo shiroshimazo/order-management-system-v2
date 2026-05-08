@@ -39,8 +39,26 @@
 
     <!-- Checkout form -->
     <VBox styleClass="chart-card" spacing="14">
-        <Label text="Delivery Details" styleClass="section-title" />
+
+        <!-- Service-type toggle -->
+        <VBox spacing="8">
+            <Label text="How would you like your order?" styleClass="section-title" />
+            <HBox fx:id="serviceTypeBar" spacing="10" styleClass="service-type-bar">
+                <ToggleButton fx:id="deliveryToggle"   text="Delivery"   styleClass="service-toggle" />
+                <ToggleButton fx:id="restaurantToggle" text="Restaurant" styleClass="service-toggle" />
+            </HBox>
+
+            <!-- Restaurant sub-toggle (Dine-In / Take-Out) -->
+            <HBox fx:id="restaurantSubBar" spacing="10" styleClass="service-sub-bar"
+                  managed="false" visible="false">
+                <ToggleButton fx:id="dineInToggle"  text="Dine-In"  styleClass="service-sub-toggle" />
+                <ToggleButton fx:id="takeOutToggle" text="Take-Out" styleClass="service-sub-toggle" />
+            </HBox>
+        </VBox>
+
         <Separator />
+
+        <Label fx:id="detailsTitleLabel" text="Delivery Details" styleClass="section-title" />
 
         <GridPane hgap="14" vgap="10">
             <columnConstraints>
@@ -48,19 +66,29 @@
                 <ColumnConstraints percentWidth="40" />
             </columnConstraints>
 
-            <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                <Label text="Shipping Address" styleClass="form-label" />
-                <TextField fx:id="addressField" promptText="Street, Barangay, City, Province" styleClass="form-field" />
+            <!-- Address (shown only for Delivery) / Table # (shown only for Dine-In) -->
+            <VBox fx:id="locationRow" spacing="6"
+                  GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label fx:id="locationLabel" text="Shipping Address" styleClass="form-label" />
+                <TextField fx:id="addressField"
+                           promptText="Street, Barangay, City, Province"
+                           styleClass="form-field" />
             </VBox>
 
             <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
                 <Label text="Contact Number" styleClass="form-label" />
-                <TextField fx:id="contactField" promptText="+63 9XX XXX XXXX" styleClass="form-field" />
+                <TextField fx:id="contactField"
+                           promptText="09XXXXXXXXX (digits only)"
+                           styleClass="form-field" />
+                <Label text="Numbers only — up to 13 digits"
+                       styleClass="form-help" />
             </VBox>
 
             <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
                 <Label text="Notes (optional)" styleClass="form-label" />
-                <TextArea fx:id="notesField" prefRowCount="2" promptText="Delivery instructions, preferred time, etc." styleClass="form-field" wrapText="true" />
+                <TextArea fx:id="notesField" prefRowCount="2"
+                          promptText="Special requests, preferred time, etc."
+                          styleClass="form-field" wrapText="true" />
             </VBox>
         </GridPane>
 

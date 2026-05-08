@@ -15,6 +15,7 @@
             <Label fx:id="orderCodeLabel" text="ORD-000000" styleClass="section-title" />
             <Label fx:id="orderDateLabel" text=""           styleClass="section-subtitle" />
         </VBox>
+        <Label fx:id="serviceTypeLabel" text="Delivery" styleClass="service-pill,service-delivery" />
         <Label fx:id="orderStatusLabel" text="Pending" />
     </HBox>
 
@@ -37,8 +38,9 @@
             <Label fx:id="contactLabel" text="—" />
         </VBox>
 
-        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
-            <Label text="Shipping Address" styleClass="form-label" />
+        <VBox fx:id="addressRow" spacing="4"
+              GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
+            <Label fx:id="addressTitleLabel" text="Shipping Address" styleClass="form-label" />
             <Label fx:id="addressLabel" text="—" wrapText="true" />
         </VBox>
 

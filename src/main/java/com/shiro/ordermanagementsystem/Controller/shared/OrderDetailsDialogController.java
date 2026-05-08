@@ -4,11 +4,13 @@ import com.shiro.ordermanagementsystem.Order;
 import com.shiro.ordermanagementsystem.OrderDAO;
 import com.shiro.ordermanagementsystem.OrderItem;
 import com.shiro.ordermanagementsystem.OrderStatus;
+import com.shiro.ordermanagementsystem.ServiceType;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.text.DecimalFormat;
@@ -19,8 +21,11 @@ public class OrderDetailsDialogController {
     @FXML private Label orderCodeLabel;
     @FXML private Label orderDateLabel;
     @FXML private Label orderStatusLabel;
+    @FXML private Label serviceTypeLabel;
     @FXML private Label customerLabel;
     @FXML private Label contactLabel;
+    @FXML private VBox  addressRow;
+    @FXML private Label addressTitleLabel;
     @FXML private Label addressLabel;
     @FXML private Label notesLabel;
     @FXML private Label subtotalLabel;
@@ -78,8 +83,31 @@ public class OrderDetailsDialogController {
 
         customerLabel.setText(order.getCustomerName() == null ? "—" : order.getCustomerName());
         contactLabel.setText(order.getContactNumber() == null ? "—" : order.getContactNumber());
-        addressLabel.setText(order.getShippingAddress() == null ? "—" : order.getShippingAddress());
         notesLabel.setText(order.getNotes() == null || order.getNotes().isBlank() ? "—" : order.getNotes());
+
+        // Service-type pill + conditional address row
+        ServiceType svc = order.getServiceType();
+        serviceTypeLabel.setText(svc.label());
+        serviceTypeLabel.getStyleClass().removeAll(
+                "service-delivery", "service-dine-in", "service-take-out");
+        serviceTypeLabel.getStyleClass().add(svc.cssClass());
+
+        switch (svc) {
+            case DELIVERY -> {
+                addressTitleLabel.setText("Shipping Address");
+                addressLabel.setText(order.getShippingAddress() == null ? "—" : order.getShippingAddress());
+                addressRow.setManaged(true); addressRow.setVisible(true);
+            }
+            case DINE_IN -> {
+                addressTitleLabel.setText("Table Number");
+                addressLabel.setText(order.getShippingAddress() == null || order.getShippingAddress().isBlank()
+                        ? "—" : order.getShippingAddress());
+                addressRow.setManaged(true); addressRow.setVisible(true);
+            }
+            case TAKE_OUT -> {
+                addressRow.setManaged(false); addressRow.setVisible(false);
+            }
+        }
 
         itemsTable.setItems(FXCollections.observableArrayList(order.getItems()));
         subtotalLabel.setText(MONEY.format(order.getSubtotal()));

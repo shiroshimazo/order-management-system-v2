@@ -5,6 +5,7 @@
     <file url="file://$PROJECT_DIR$/sql/migration_products.sql" value="893cdd60-77df-4f8f-8eaa-494d4d6e366d" />
     <file url="file://$PROJECT_DIR$/sql/migration_split_users.sql" value="893cdd60-77df-4f8f-8eaa-494d4d6e366d" />
     <file url="file://$PROJECT_DIR$/src/main/resources/sql/create_feedback_table.sql" value="893cdd60-77df-4f8f-8eaa-494d4d6e366d" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/sql/migration_order_service_type.sql" value="893cdd60-77df-4f8f-8eaa-494d4d6e366d" />
     <file url="file://$PROJECT_DIR$/src/main/resources/sql/migration_product_image_blob.sql" value="893cdd60-77df-4f8f-8eaa-494d4d6e366d" />
     <file url="file://$PROJECT_DIR$/src/main/resources/sql/migration_storefront_columns.sql" value="893cdd60-77df-4f8f-8eaa-494d4d6e366d" />
     <file url="file://$PROJECT_DIR$/src/main/resources/sql/seed_burgers_and_drinks.sql" value="893cdd60-77df-4f8f-8eaa-494d4d6e366d" />

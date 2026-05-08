@@ -96,11 +96,44 @@
             </HBox>
         </VBox>
 
-        <!-- Delivery details -->
+        <!-- Service type + delivery / restaurant details -->
         <Separator />
-        <Label text="Delivery Details" styleClass="form-label" />
-        <TextField fx:id="addressField" promptText="Street, Barangay, City, Province" styleClass="form-field" />
-        <TextField fx:id="contactField" promptText="+63 9XX XXX XXXX" styleClass="form-field" />
+
+        <!-- Service-type toggle -->
+        <VBox spacing="6">
+            <Label text="Order Type" styleClass="form-label" />
+            <HBox spacing="6" styleClass="service-type-bar">
+                <ToggleButton fx:id="deliveryToggle"   text="Delivery"   styleClass="service-toggle"
+                              HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                <ToggleButton fx:id="restaurantToggle" text="Restaurant" styleClass="service-toggle"
+                              HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+            </HBox>
+
+            <HBox fx:id="restaurantSubBar" spacing="6" styleClass="service-sub-bar"
+                  managed="false" visible="false">
+                <ToggleButton fx:id="dineInToggle"  text="Dine-In"  styleClass="service-sub-toggle"
+                              HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                <ToggleButton fx:id="takeOutToggle" text="Take-Out" styleClass="service-sub-toggle"
+                              HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+            </HBox>
+        </VBox>
+
+        <Label fx:id="detailsTitleLabel" text="Delivery Details" styleClass="form-label" />
+
+        <VBox fx:id="locationRow" spacing="4">
+            <Label fx:id="locationLabel" text="Shipping Address" styleClass="form-help" />
+            <TextField fx:id="addressField"
+                       promptText="Street, Barangay, City, Province"
+                       styleClass="form-field" />
+        </VBox>
+
+        <VBox spacing="4">
+            <Label text="Contact Number (digits only)" styleClass="form-help" />
+            <TextField fx:id="contactField"
+                       promptText="09XXXXXXXXX"
+                       styleClass="form-field" />
+        </VBox>
+
         <TextArea  fx:id="notesField"
                    promptText="Notes (optional)"
                    prefRowCount="2"

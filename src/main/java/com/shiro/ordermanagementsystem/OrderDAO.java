@@ -16,18 +16,22 @@ public class OrderDAO {
             "FROM customer_order o " +
             "LEFT JOIN user_customer uc ON o.customer_id = uc.id ";
 
-    // ─── Schema probing for the `tax` column ──────────────────────────────────
+    // ─── Schema probing for `tax` and `service_type` ──────────────────────────
     private static Boolean hasTaxCol;
+    private static Boolean hasServiceTypeCol;
 
     private static void ensureSchemaProbed(Connection conn) throws SQLException {
-        if (hasTaxCol != null) return;
-        boolean tax = false;
+        if (hasTaxCol != null && hasServiceTypeCol != null) return;
+        boolean tax = false, serviceType = false;
         try (ResultSet rs = conn.getMetaData().getColumns(null, null, "customer_order", null)) {
             while (rs.next()) {
-                if ("tax".equalsIgnoreCase(rs.getString("COLUMN_NAME"))) tax = true;
+                String col = rs.getString("COLUMN_NAME");
+                if ("tax".equalsIgnoreCase(col))          tax = true;
+                if ("service_type".equalsIgnoreCase(col)) serviceType = true;
             }
         }
-        hasTaxCol = tax;
+        hasTaxCol         = tax;
+        hasServiceTypeCol = serviceType;
     }
 
     /** subtotal × 12%, rounded HALF_UP to 2dp. */
@@ -37,10 +41,18 @@ public class OrderDAO {
     }
 
     // ─── Place order (transaction: header + items + stock decrement) ──────────
+    /** Backward-compatible overload — defaults to DELIVERY. */
     public static Order placeOrder(int customerId, List<CartLine> lines,
                                    String shippingAddress, String contactNumber,
                                    String notes) {
+        return placeOrder(customerId, lines, shippingAddress, contactNumber, notes, ServiceType.DELIVERY);
+    }
+
+    public static Order placeOrder(int customerId, List<CartLine> lines,
+                                   String shippingAddress, String contactNumber,
+                                   String notes, ServiceType serviceType) {
         if (lines == null || lines.isEmpty()) return null;
+        if (serviceType == null) serviceType = ServiceType.DELIVERY;
 
         Connection conn = null;
         try {
@@ -61,14 +73,16 @@ public class OrderDAO {
             BigDecimal tax   = computeTax(subtotal);
             BigDecimal total = subtotal.add(tax);
 
-            // Insert header (temporary order_code, patch after we know id)
-            String insertHeader = hasTaxCol
-                    ? "INSERT INTO customer_order " +
-                      "(order_code, customer_id, status, subtotal, tax, total, shipping_address, contact_number, notes) " +
-                      "VALUES (?, ?, 'PENDING', ?, ?, ?, ?, ?, ?)"
-                    : "INSERT INTO customer_order " +
-                      "(order_code, customer_id, status, subtotal, total, shipping_address, contact_number, notes) " +
-                      "VALUES (?, ?, 'PENDING', ?, ?, ?, ?, ?)";
+            // Insert header (temporary order_code, patch after we know id).
+            // Column list is built dynamically based on what the schema supports.
+            StringBuilder cols = new StringBuilder(
+                    "order_code, customer_id, status, subtotal, ");
+            StringBuilder vals = new StringBuilder("?, ?, 'PENDING', ?, ");
+            if (hasTaxCol)         { cols.append("tax, ");           vals.append("?, "); }
+            cols.append("total, shipping_address, contact_number, notes");
+            vals.append("?, ?, ?, ?");
+            if (hasServiceTypeCol) { cols.append(", service_type");   vals.append(", ?"); }
+            String insertHeader = "INSERT INTO customer_order (" + cols + ") VALUES (" + vals + ")";
 
             int orderId;
             try (PreparedStatement hs = conn.prepareStatement(insertHeader, Statement.RETURN_GENERATED_KEYS)) {
@@ -80,7 +94,8 @@ public class OrderDAO {
                 hs.setBigDecimal(i++, total);
                 setNullable(hs, i++, shippingAddress);
                 setNullable(hs, i++, contactNumber);
-                setNullable(hs, i,   notes);
+                setNullable(hs, i++, notes);
+                if (hasServiceTypeCol) hs.setString(i, serviceType.name());
                 hs.executeUpdate();
                 try (ResultSet keys = hs.getGeneratedKeys()) {
                     keys.next();
@@ -489,7 +504,7 @@ public class OrderDAO {
         catch (SQLException ignored) { tax = BigDecimal.ZERO; }
         if (tax == null) tax = BigDecimal.ZERO;
 
-        return new Order(
+        Order order = new Order(
                 rs.getInt("id"),
                 rs.getString("order_code"),
                 rs.getInt("customer_id"),
@@ -504,6 +519,9 @@ public class OrderDAO {
                 created != null ? created.toLocalDateTime() : null,
                 updated != null ? updated.toLocalDateTime() : null
         );
+        try { order.setServiceType(ServiceType.parse(rs.getString("service_type"))); }
+        catch (SQLException ignored) { /* column not present yet */ }
+        return order;
     }
 
     // ─── Minimal DTO for placeOrder ───────────────────────────────────────────

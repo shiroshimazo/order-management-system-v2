@@ -5,6 +5,7 @@
     <file url="file://$PROJECT_DIR$/sql/migration_products.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/sql/migration_split_users.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/sql/create_feedback_table.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/sql/migration_order_service_type.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/sql/migration_product_image_blob.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/sql/migration_storefront_columns.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/sql/seed_burgers_and_drinks.sql" dialect="MySQL" />

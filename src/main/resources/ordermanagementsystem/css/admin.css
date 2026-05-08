@@ -583,6 +583,72 @@
     -fx-text-fill: #888888;
 }
 
+/* ── Service-type toggles (cart checkout) ── */
+.service-type-bar,
+.service-sub-bar {
+    -fx-spacing: 10;
+}
+
+.service-toggle {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #555555;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 22 10 22;
+    -fx-background-radius: 10;
+    -fx-border-color: #d9dbe1;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-cursor: hand;
+}
+
+.service-toggle:hover {
+    -fx-background-color: #fff4f3;
+    -fx-border-color: #f0bbb6;
+}
+
+.service-toggle:selected {
+    -fx-background-color: #D92A1C;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #D92A1C;
+}
+
+.service-sub-toggle {
+    -fx-background-color: #f6f7f9;
+    -fx-text-fill: #555555;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 7 16 7 16;
+    -fx-background-radius: 999;
+    -fx-border-color: #e3e6ea;
+    -fx-border-width: 1;
+    -fx-border-radius: 999;
+    -fx-cursor: hand;
+}
+
+.service-sub-toggle:hover {
+    -fx-background-color: #ececef;
+}
+
+.service-sub-toggle:selected {
+    -fx-background-color: #222222;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #222222;
+}
+
+/* Service-type pill (order details / lists) */
+.service-pill {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 3 10 3 10;
+    -fx-background-radius: 999;
+    -fx-text-fill: #ffffff;
+}
+
+.service-pill.service-delivery { -fx-background-color: #D92A1C; }
+.service-pill.service-dine-in  { -fx-background-color: #1f8a3b; }
+.service-pill.service-take-out { -fx-background-color: #2e6cdf; }
+
 /* ═══ PRODUCTS TOOLBAR ═══ */
 .toolbar {
     -fx-padding: 0 0 4 0;

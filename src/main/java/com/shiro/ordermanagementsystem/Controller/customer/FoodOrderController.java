@@ -7,6 +7,7 @@ import com.shiro.ordermanagementsystem.Order;
 import com.shiro.ordermanagementsystem.OrderDAO;
 import com.shiro.ordermanagementsystem.Product;
 import com.shiro.ordermanagementsystem.ProductDAO;
+import com.shiro.ordermanagementsystem.ServiceType;
 import com.shiro.ordermanagementsystem.session.Cart;
 import com.shiro.ordermanagementsystem.session.Session;
 import com.shiro.ordermanagementsystem.ui.ProductImages;
@@ -55,8 +56,21 @@ public class FoodOrderController {
     @FXML private Label      messageLabel;
     @FXML private Button     checkoutButton;
 
+    // ─── Service-type toggles ────────────────────────────────────────────────
+    @FXML private ToggleButton deliveryToggle;
+    @FXML private ToggleButton restaurantToggle;
+    @FXML private HBox         restaurantSubBar;
+    @FXML private ToggleButton dineInToggle;
+    @FXML private ToggleButton takeOutToggle;
+    @FXML private Label        detailsTitleLabel;
+    @FXML private VBox         locationRow;
+    @FXML private Label        locationLabel;
+
+    private ServiceType selectedService = ServiceType.DELIVERY;
+
     private static final DecimalFormat MONEY = new DecimalFormat("₱#,##0.00");
     private static final double NARROW_THRESHOLD = 820;
+    private static final int    MAX_PHONE_DIGITS = 13;
 
     private static final String CHIP_BASE   = "category-chip";
     private static final String CHIP_ACTIVE = "category-chip-active";
@@ -74,14 +88,104 @@ public class FoodOrderController {
 
         reloadProducts();
         rebuildCart();
+        setupServiceTypeToggles();
+        setupContactField();
 
-        // Pre-fill delivery details from customer profile if available
+        // Pre-fill contact from customer profile, but strip non-digits to match the filter.
         Customer c = Session.getCurrentCustomer();
-        if (c != null && c.getPhone() != null) contactField.setText(c.getPhone());
+        if (c != null && c.getPhone() != null) {
+            String digits = c.getPhone().replaceAll("\\D", "");
+            if (digits.length() > MAX_PHONE_DIGITS) digits = digits.substring(0, MAX_PHONE_DIGITS);
+            contactField.setText(digits);
+        }
 
         catalogColumn.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) bindResponsive(newScene);
         });
+    }
+
+    // ─── Service-type plumbing ────────────────────────────────────────────────
+    private void setupServiceTypeToggles() {
+        ToggleGroup top = new ToggleGroup();
+        deliveryToggle.setToggleGroup(top);
+        restaurantToggle.setToggleGroup(top);
+
+        ToggleGroup sub = new ToggleGroup();
+        dineInToggle.setToggleGroup(sub);
+        takeOutToggle.setToggleGroup(sub);
+
+        top.selectedToggleProperty().addListener((obs, oldT, newT) -> {
+            if (newT == null && oldT != null) oldT.setSelected(true);
+        });
+        sub.selectedToggleProperty().addListener((obs, oldT, newT) -> {
+            if (newT == null && oldT != null && selectedService != ServiceType.DELIVERY) {
+                oldT.setSelected(true);
+            }
+        });
+
+        deliveryToggle.setOnAction(e -> selectService(ServiceType.DELIVERY));
+        restaurantToggle.setOnAction(e -> {
+            if (!dineInToggle.isSelected() && !takeOutToggle.isSelected()) {
+                dineInToggle.setSelected(true);
+                selectService(ServiceType.DINE_IN);
+            } else if (takeOutToggle.isSelected()) {
+                selectService(ServiceType.TAKE_OUT);
+            } else {
+                selectService(ServiceType.DINE_IN);
+            }
+        });
+        dineInToggle.setOnAction(e  -> selectService(ServiceType.DINE_IN));
+        takeOutToggle.setOnAction(e -> selectService(ServiceType.TAKE_OUT));
+
+        deliveryToggle.setSelected(true);
+        applyServiceTypeUi(ServiceType.DELIVERY);
+    }
+
+    private void selectService(ServiceType type) {
+        this.selectedService = type;
+        if (type == ServiceType.DELIVERY) {
+            deliveryToggle.setSelected(true);
+            dineInToggle.setSelected(false);
+            takeOutToggle.setSelected(false);
+        } else {
+            restaurantToggle.setSelected(true);
+        }
+        applyServiceTypeUi(type);
+    }
+
+    private void applyServiceTypeUi(ServiceType type) {
+        boolean restaurant = (type == ServiceType.DINE_IN || type == ServiceType.TAKE_OUT);
+        restaurantSubBar.setManaged(restaurant);
+        restaurantSubBar.setVisible(restaurant);
+
+        switch (type) {
+            case DELIVERY -> {
+                detailsTitleLabel.setText("Delivery Details");
+                locationLabel.setText("Shipping Address");
+                addressField.setPromptText("Street, Barangay, City, Province");
+                locationRow.setManaged(true); locationRow.setVisible(true);
+            }
+            case DINE_IN -> {
+                detailsTitleLabel.setText("Dine-In Details");
+                locationLabel.setText("Table Number (optional)");
+                addressField.setPromptText("e.g. 5");
+                locationRow.setManaged(true); locationRow.setVisible(true);
+            }
+            case TAKE_OUT -> {
+                detailsTitleLabel.setText("Take-Out Details");
+                locationRow.setManaged(false); locationRow.setVisible(false);
+                addressField.clear();
+            }
+        }
+    }
+
+    private void setupContactField() {
+        contactField.setTextFormatter(new TextFormatter<>(change -> {
+            String next = change.getControlNewText();
+            if (!next.matches("\\d*")) return null;
+            if (next.length() > MAX_PHONE_DIGITS) return null;
+            return change;
+        }));
     }
 
     // ─── Responsiveness ───────────────────────────────────────────────────────
@@ -364,23 +468,38 @@ public class FoodOrderController {
         String contact = contactField.getText() == null ? "" : contactField.getText().trim();
         String notes   = notesField.getText()   == null ? "" : notesField.getText().trim();
 
-        if (address.isEmpty()) { showError("Shipping address is required."); return; }
-        if (contact.isEmpty()) { showError("Contact number is required."); return; }
+        // Service-type-specific validation
+        switch (selectedService) {
+            case DELIVERY -> {
+                if (address.isEmpty()) { showError("Shipping address is required for delivery."); return; }
+            }
+            case DINE_IN, TAKE_OUT -> { /* address optional / hidden */ }
+        }
+        if (contact.isEmpty())     { showError("Contact number is required."); return; }
+        if (contact.length() < 7)  { showError("Enter a valid contact number (at least 7 digits)."); return; }
+
+        String storedAddress = address.isEmpty() ? null : address;
 
         BigDecimal subtotal = Cart.total().setScale(2, java.math.RoundingMode.HALF_UP);
         BigDecimal vat      = OrderDAO.computeTax(subtotal);
         BigDecimal total    = subtotal.add(vat);
 
+        String destination = switch (selectedService) {
+            case DELIVERY -> "Deliver to:\n" + address;
+            case DINE_IN  -> "Dine-In" + (storedAddress != null ? " (Table " + storedAddress + ")" : "");
+            case TAKE_OUT -> "Take-Out (pickup at counter)";
+        };
+
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.initOwner(checkoutButton.getScene().getWindow());
         confirm.setTitle("Confirm Order");
-        confirm.setHeaderText("Place this order?");
+        confirm.setHeaderText("Place this " + selectedService.label().toLowerCase() + " order?");
         confirm.setContentText(
                 "Items: "    + Cart.itemCount() + "\n" +
                 "Subtotal: " + MONEY.format(subtotal) + "\n" +
                 "VAT (12%): " + MONEY.format(vat) + "\n" +
                 "Total: "    + MONEY.format(total) + "\n\n" +
-                "Deliver to:\n" + address + "\nContact: " + contact);
+                destination + "\nContact: " + contact);
 
         ButtonType place  = new ButtonType("Place Order", ButtonBar.ButtonData.OK_DONE);
         ButtonType cancel = new ButtonType("Cancel",      ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -398,7 +517,8 @@ public class FoodOrderController {
         for (Cart.Line l : Cart.lines()) payload.add(new OrderDAO.CartLine(l.product.getId(), l.quantity));
 
         checkoutButton.setDisable(true);
-        Order order = OrderDAO.placeOrder(customer.getId(), payload, address, contact, notes);
+        Order order = OrderDAO.placeOrder(
+                customer.getId(), payload, storedAddress, contact, notes, selectedService);
         checkoutButton.setDisable(false);
 
         if (order == null) {
@@ -408,6 +528,8 @@ public class FoodOrderController {
 
         Cart.clear();
         addressField.clear(); notesField.clear();
+        // Reset to Delivery for the next order.
+        selectService(ServiceType.DELIVERY);
         hideMessage();
 
         Alert ok = new Alert(Alert.AlertType.INFORMATION,

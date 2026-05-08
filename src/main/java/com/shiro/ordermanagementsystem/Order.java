@@ -18,6 +18,7 @@ public class Order {
     private String          shippingAddress;
     private String          contactNumber;
     private String          notes;
+    private ServiceType     serviceType = ServiceType.DELIVERY;
     private LocalDateTime   createdAt;
     private LocalDateTime   updatedAt;
     private List<OrderItem> items = new ArrayList<>();
@@ -67,8 +68,10 @@ public class Order {
     public LocalDateTime   getCreatedAt()       { return createdAt; }
     public LocalDateTime   getUpdatedAt()       { return updatedAt; }
     public List<OrderItem> getItems()           { return items; }
+    public ServiceType     getServiceType()     { return serviceType == null ? ServiceType.DELIVERY : serviceType; }
 
-    public void setItems(List<OrderItem> items) { this.items = items; }
-    public void setStatus(OrderStatus status)   { this.status = status; }
-    public void setTax(BigDecimal tax)          { this.tax = tax; }
+    public void setItems(List<OrderItem> items)        { this.items = items; }
+    public void setStatus(OrderStatus status)          { this.status = status; }
+    public void setTax(BigDecimal tax)                 { this.tax = tax; }
+    public void setServiceType(ServiceType serviceType){ this.serviceType = serviceType; }
 }
