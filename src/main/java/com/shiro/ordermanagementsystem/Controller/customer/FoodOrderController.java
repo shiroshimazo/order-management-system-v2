@@ -178,7 +178,7 @@ public class FoodOrderController {
         // Image
         StackPane imageWrap = new StackPane();
         imageWrap.getStyleClass().add("product-image-wrap");
-        Image img = ProductImages.load(p.getImageUrl(), 220, 140);
+        Image img = ProductImages.loadForProduct(p.getId(), 220, 140);
         if (img != null) {
             ImageView iv = new ImageView(img);
             iv.setFitWidth(220);

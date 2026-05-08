@@ -16,10 +16,13 @@ public class ProductDAO {
     private static Boolean hasOriginalPrice;
     private static Boolean hasRating;
     private static Boolean hasRatingCount;
+    private static Boolean hasImageData;
+    private static Boolean hasImageMime;
 
     private static void ensureSchemaProbed(Connection conn) throws SQLException {
         if (hasImageUrl != null) return;
-        boolean img = false, orig = false, rate = false, rateN = false;
+        boolean img = false, orig = false, rate = false, rateN = false,
+                blob = false, mime = false;
         try (ResultSet rs = conn.getMetaData().getColumns(null, null, "product", null)) {
             while (rs.next()) {
                 String name = rs.getString("COLUMN_NAME");
@@ -27,12 +30,16 @@ public class ProductDAO {
                 if ("original_price".equalsIgnoreCase(name)) orig  = true;
                 if ("rating".equalsIgnoreCase(name))         rate  = true;
                 if ("rating_count".equalsIgnoreCase(name))   rateN = true;
+                if ("image_data".equalsIgnoreCase(name))     blob  = true;
+                if ("image_mime".equalsIgnoreCase(name))     mime  = true;
             }
         }
         hasImageUrl      = img;
         hasOriginalPrice = orig;
         hasRating        = rate;
         hasRatingCount   = rateN;
+        hasImageData     = blob;
+        hasImageMime     = mime;
     }
 
     private static String baseSelect(Connection conn) throws SQLException {
@@ -117,6 +124,21 @@ public class ProductDAO {
             String sql = baseSelect(conn) + "WHERE p.id = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, id);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) return mapRow(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // ─── Find by SKU ──────────────────────────────────────────────────────────
+    public static Product findBySku(String sku) {
+        try (Connection conn = Databaseconnection.getConnection()) {
+            String sql = baseSelect(conn) + "WHERE p.sku = ? LIMIT 1";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, sku);
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) return mapRow(rs);
             }
@@ -278,6 +300,81 @@ public class ProductDAO {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    // ─── Image BLOB I/O ───────────────────────────────────────────────────────
+    /** Returns the raw bytes of the product's uploaded photo, or null if none. */
+    public static byte[] loadImageBytes(int id) {
+        try (Connection conn = Databaseconnection.getConnection()) {
+            ensureSchemaProbed(conn);
+            if (!hasImageData) return null;
+            try (PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT image_data FROM product WHERE id = ?")) {
+                stmt.setInt(1, id);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) return rs.getBytes(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /** Returns the MIME type for the product's uploaded photo, or null. */
+    public static String loadImageMime(int id) {
+        try (Connection conn = Databaseconnection.getConnection()) {
+            ensureSchemaProbed(conn);
+            if (!hasImageMime) return null;
+            try (PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT image_mime FROM product WHERE id = ?")) {
+                stmt.setInt(1, id);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) return rs.getString(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /** Replaces the product's photo BLOB. Pass null bytes to keep the existing one — use clearImage() to remove. */
+    public static boolean setImage(int id, byte[] bytes, String mime) {
+        if (bytes == null) return true;
+        try (Connection conn = Databaseconnection.getConnection()) {
+            ensureSchemaProbed(conn);
+            if (!hasImageData) return false;
+            String sql = hasImageMime
+                    ? "UPDATE product SET image_data = ?, image_mime = ? WHERE id = ?"
+                    : "UPDATE product SET image_data = ? WHERE id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                int i = 1;
+                stmt.setBytes(i++, bytes);
+                if (hasImageMime) stmt.setString(i++, mime);
+                stmt.setInt(i, id);
+                return stmt.executeUpdate() > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /** Wipes the product's photo BLOB (sets image_data and image_mime to NULL). */
+    public static boolean clearImage(int id) {
+        try (Connection conn = Databaseconnection.getConnection()) {
+            ensureSchemaProbed(conn);
+            if (!hasImageData) return false;
+            String sql = hasImageMime
+                    ? "UPDATE product SET image_data = NULL, image_mime = NULL WHERE id = ?"
+                    : "UPDATE product SET image_data = NULL WHERE id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, id);
+                return stmt.executeUpdate() > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // ─── Row mapper ───────────────────────────────────────────────────────────

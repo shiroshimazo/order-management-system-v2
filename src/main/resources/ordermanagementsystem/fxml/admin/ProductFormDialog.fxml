@@ -2,6 +2,8 @@
 
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import org.kordamp.ikonli.javafx.*?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
@@ -59,8 +61,28 @@
         </VBox>
 
         <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="4">
-            <Label text="Image" styleClass="form-label" />
-            <TextField fx:id="imageUrlField" promptText="URL or local path" styleClass="form-field" />
+            <Label text="Image (PNG / JPG, max 2 MB)" styleClass="form-label" />
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <StackPane fx:id="imagePreviewWrap" prefWidth="80" prefHeight="80"
+                           minWidth="80" minHeight="80" maxWidth="80" maxHeight="80"
+                           styleClass="image-preview-wrap">
+                    <ImageView fx:id="imagePreview" fitWidth="78" fitHeight="78"
+                               preserveRatio="true" smooth="true" />
+                    <FontIcon fx:id="imagePreviewPlaceholder"
+                              iconLiteral="fas-image" iconSize="28" iconColor="#cfd2d8" />
+                </StackPane>
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <HBox spacing="6">
+                        <Button fx:id="chooseImageButton" text="Choose image…"
+                                onAction="#handleChooseImage" styleClass="button-secondary" />
+                        <Button fx:id="removeImageButton"  text="Remove"
+                                onAction="#handleRemoveImage" styleClass="button-secondary"
+                                disable="true" />
+                    </HBox>
+                    <Label fx:id="imageStatusLabel" text="No image selected"
+                           styleClass="form-help" wrapText="true" />
+                </VBox>
+            </HBox>
         </VBox>
     </GridPane>
 

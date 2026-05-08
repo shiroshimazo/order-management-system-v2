@@ -568,6 +568,21 @@
 .form-message-error   { -fx-text-fill: #D92A1C; }
 .form-message-success { -fx-text-fill: #1f8a3b; }
 
+/* ── Image picker (product form) ── */
+.image-preview-wrap {
+    -fx-background-color: #f6f7f9;
+    -fx-background-radius: 10;
+    -fx-border-color: #e3e6ea;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-alignment: center;
+}
+
+.form-help {
+    -fx-font-size: 11px;
+    -fx-text-fill: #888888;
+}
+
 /* ═══ PRODUCTS TOOLBAR ═══ */
 .toolbar {
     -fx-padding: 0 0 4 0;
