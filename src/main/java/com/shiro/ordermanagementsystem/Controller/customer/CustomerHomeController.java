@@ -4,6 +4,7 @@ import com.shiro.ordermanagementsystem.Customer;
 import com.shiro.ordermanagementsystem.nav.CustomerNav;
 import com.shiro.ordermanagementsystem.session.Cart;
 import com.shiro.ordermanagementsystem.session.Session;
+import com.shiro.ordermanagementsystem.ui.CustomerImages;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -18,12 +19,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -43,6 +47,8 @@ public class CustomerHomeController {
     @FXML private Label     customerNameLabel;
     @FXML private Label     customerEmailLabel;
     @FXML private Label     customerAvatarLabel;
+    @FXML private StackPane customerAvatarStack;
+    @FXML private ImageView customerAvatarImage;
 
     // ─── Sidebar ──────────────────────────────────────────────────────────────
     @FXML private VBox      sidebar;
@@ -73,6 +79,11 @@ public class CustomerHomeController {
     @FXML
     public void initialize() {
         instance = this;
+
+        // Clip the topbar avatar to a 36px circle (matches the StackPane frame).
+        if (customerAvatarImage != null) {
+            customerAvatarImage.setClip(new Circle(18, 18, 18));
+        }
 
         Customer customer = Session.getCurrentCustomer();
         if (customer != null) paintCustomerBadge(customer);
@@ -114,6 +125,17 @@ public class CustomerHomeController {
         customerNameLabel.setText(c.getFullName());
         customerEmailLabel.setText(c.getEmail());
         customerAvatarLabel.setText(initialsOf(c.getFullName()));
+
+        // Show the uploaded avatar if there is one, otherwise fall back to initials.
+        Image avatar = CustomerImages.loadForCustomer(c.getId(), 72, 72);
+        boolean hasAvatar = avatar != null;
+        if (customerAvatarImage != null) {
+            customerAvatarImage.setImage(avatar);
+            customerAvatarImage.setVisible(hasAvatar);
+            customerAvatarImage.setManaged(hasAvatar);
+        }
+        customerAvatarLabel.setVisible(!hasAvatar);
+        customerAvatarLabel.setManaged(!hasAvatar);
     }
 
     private static String initialsOf(String fullName) {

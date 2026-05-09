@@ -2,6 +2,7 @@
 
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import org.kordamp.ikonli.javafx.*?>
 
 <ScrollPane xmlns="http://javafx.com/javafx"
@@ -28,11 +29,28 @@
 
                     <!-- Avatar header -->
                     <HBox alignment="CENTER_LEFT" spacing="16" styleClass="profile-header">
-                        <FontIcon iconLiteral="fas-user-circle" iconSize="56" iconColor="#D92A1C" />
-                        <VBox spacing="2">
+                        <StackPane fx:id="avatarFrame" prefWidth="72" prefHeight="72"
+                                   minWidth="72" minHeight="72" styleClass="avatar-frame">
+                            <FontIcon fx:id="avatarPlaceholder" iconLiteral="fas-user-circle"
+                                      iconSize="64" iconColor="#D92A1C" />
+                            <ImageView fx:id="avatarImage" fitWidth="72" fitHeight="72"
+                                       preserveRatio="false" pickOnBounds="true"
+                                       visible="false" managed="false" />
+                        </StackPane>
+                        <VBox spacing="2" HBox.hgrow="ALWAYS">
                             <Label fx:id="profileNameLabel"  text="Customer Name" styleClass="profile-name" />
                             <Label fx:id="profileEmailLabel" text="name@email.com" styleClass="profile-level" />
                             <Label fx:id="profileMemberLabel" text="Member"        styleClass="profile-code" />
+                        </VBox>
+                        <VBox spacing="6" alignment="CENTER_RIGHT">
+                            <HBox spacing="6" alignment="CENTER_RIGHT">
+                                <Button fx:id="changeAvatarButton" text="Change Photo"
+                                        onAction="#handleChooseAvatar" styleClass="button-secondary" />
+                                <Button fx:id="removeAvatarButton" text="Remove"
+                                        onAction="#handleRemoveAvatar" styleClass="button-secondary" />
+                            </HBox>
+                            <Label fx:id="avatarStatusLabel" text="PNG / JPG, up to 2 MB"
+                                   styleClass="form-help" wrapText="true" maxWidth="240" />
                         </VBox>
                     </HBox>
 

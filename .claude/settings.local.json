@@ -6,7 +6,12 @@
       "Read(//tmp/**)",
       "Bash(JAVA_HOME=\"C:/Users/shiro/.jdks/openjdk-26\" ./mvnw -DskipTests compile)",
       "Bash(grep -E \"\\(ERROR|BUILD FAILURE|symbol|cannot find|\\\\\\\\[ERROR\\\\\\\\]\\)\" /tmp/mvn.log)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(cmd *)",
+      "Bash(powershell *)",
+      "Bash(./mvnw -q -DskipTests compile)",
+      "PowerShell($env:JAVA_HOME = \\(Get-ChildItem 'C:\\\\Program Files\\\\Java','C:\\\\Program Files\\\\Eclipse Adoptium','C:\\\\Program Files\\\\Microsoft' -ErrorAction SilentlyContinue -Directory | Where-Object { $_.Name -match 'jdk' } | Select-Object -First 1 -ExpandProperty FullName\\); if \\(-not $env:JAVA_HOME\\) { Write-Output \"no jdk found in standard locations\" } else { Write-Output \"JAVA_HOME=$env:JAVA_HOME\"; & \"$env:JAVA_HOME\\\\bin\\\\java.exe\" -version })",
+      "PowerShell(Get-Command *)"
     ]
   }
 }

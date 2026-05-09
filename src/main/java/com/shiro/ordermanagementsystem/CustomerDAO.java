@@ -196,19 +196,84 @@ public class CustomerDAO {
     // ─── Schema probing (works with or without the active/created_at migration) ─
     private static Boolean hasActiveCol;
     private static Boolean hasCreatedAtCol;
+    private static Boolean hasAvatarData;
+    private static Boolean hasAvatarMime;
 
     private static void ensureSchemaProbed(Connection conn) throws SQLException {
-        if (hasActiveCol != null && hasCreatedAtCol != null) return;
-        boolean active = false, created = false;
+        if (hasActiveCol != null && hasCreatedAtCol != null
+                && hasAvatarData != null && hasAvatarMime != null) return;
+        boolean active = false, created = false, avatar = false, mime = false;
         try (ResultSet rs = conn.getMetaData().getColumns(null, null, "user_customer", null)) {
             while (rs.next()) {
                 String name = rs.getString("COLUMN_NAME");
-                if ("active".equalsIgnoreCase(name))     active = true;
-                if ("created_at".equalsIgnoreCase(name)) created = true;
+                if ("active".equalsIgnoreCase(name))      active  = true;
+                if ("created_at".equalsIgnoreCase(name))  created = true;
+                if ("avatar_data".equalsIgnoreCase(name)) avatar  = true;
+                if ("avatar_mime".equalsIgnoreCase(name)) mime    = true;
             }
         }
         hasActiveCol    = active;
         hasCreatedAtCol = created;
+        hasAvatarData   = avatar;
+        hasAvatarMime   = mime;
+    }
+
+    // ─── Avatar BLOB I/O ──────────────────────────────────────────────────────
+    /** Returns the raw bytes of the customer's uploaded avatar, or null if none. */
+    public static byte[] loadAvatarBytes(int id) {
+        try (Connection conn = Databaseconnection.getConnection()) {
+            ensureSchemaProbed(conn);
+            if (!hasAvatarData) return null;
+            try (PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT avatar_data FROM user_customer WHERE id = ?")) {
+                stmt.setInt(1, id);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) return rs.getBytes(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /** Replaces the customer's avatar BLOB. Pass null bytes to leave it untouched — use clearAvatar() to remove. */
+    public static boolean setAvatar(int id, byte[] bytes, String mime) {
+        if (bytes == null) return true;
+        try (Connection conn = Databaseconnection.getConnection()) {
+            ensureSchemaProbed(conn);
+            if (!hasAvatarData) return false;
+            String sql = hasAvatarMime
+                    ? "UPDATE user_customer SET avatar_data = ?, avatar_mime = ? WHERE id = ?"
+                    : "UPDATE user_customer SET avatar_data = ? WHERE id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                int i = 1;
+                stmt.setBytes(i++, bytes);
+                if (hasAvatarMime) stmt.setString(i++, mime);
+                stmt.setInt(i, id);
+                return stmt.executeUpdate() > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /** Wipes the customer's avatar BLOB (sets avatar_data and avatar_mime to NULL). */
+    public static boolean clearAvatar(int id) {
+        try (Connection conn = Databaseconnection.getConnection()) {
+            ensureSchemaProbed(conn);
+            if (!hasAvatarData) return false;
+            String sql = hasAvatarMime
+                    ? "UPDATE user_customer SET avatar_data = NULL, avatar_mime = NULL WHERE id = ?"
+                    : "UPDATE user_customer SET avatar_data = NULL WHERE id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, id);
+                return stmt.executeUpdate() > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // ─── Search with derived order totals ─────────────────────────────────────

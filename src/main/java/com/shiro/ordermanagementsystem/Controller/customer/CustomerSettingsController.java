@@ -4,14 +4,26 @@ import com.shiro.ordermanagementsystem.AdminDAO;
 import com.shiro.ordermanagementsystem.Customer;
 import com.shiro.ordermanagementsystem.CustomerDAO;
 import com.shiro.ordermanagementsystem.session.Session;
+import com.shiro.ordermanagementsystem.ui.CustomerImages;
 import com.shiro.ordermanagementsystem.ui.Toast;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Circle;
+import javafx.stage.FileChooser;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
@@ -21,6 +33,13 @@ public class CustomerSettingsController {
     @FXML private Label     profileNameLabel;
     @FXML private Label     profileEmailLabel;
     @FXML private Label     profileMemberLabel;
+
+    @FXML private StackPane avatarFrame;
+    @FXML private ImageView avatarImage;
+    @FXML private FontIcon  avatarPlaceholder;
+    @FXML private Button    changeAvatarButton;
+    @FXML private Button    removeAvatarButton;
+    @FXML private Label     avatarStatusLabel;
 
     @FXML private TextField usernameField;
     @FXML private TextField memberSinceField;
@@ -47,9 +66,20 @@ public class CustomerSettingsController {
 
     private static final Pattern EMAIL_RE = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
     private static final DateTimeFormatter MEMBER_FMT = DateTimeFormatter.ofPattern("MMMM yyyy");
+    private static final long MAX_AVATAR_BYTES = 2L * 1024 * 1024;   // 2 MB
+
+    /** New bytes the user picked this session. Null means "no change". */
+    private byte[]  pendingAvatarBytes;
+    private String  pendingAvatarMime;
+    /** Set when the user clicks Remove — wipes the existing BLOB on save. */
+    private boolean removeExistingAvatar;
 
     @FXML
     public void initialize() {
+        // Crop the avatar image to a circle (matches the StackPane frame).
+        Circle clip = new Circle(36, 36, 36);
+        avatarImage.setClip(clip);
+
         Customer c = Session.getCurrentCustomer();
         if (c != null) loadCustomer(c);
 
@@ -70,6 +100,18 @@ public class CustomerSettingsController {
         fullNameField.setText(c.getFullName());
         emailField.setText(c.getEmail());
         phoneField.setText(c.getPhone() == null ? "" : c.getPhone());
+
+        // Reset any pending edit, then paint whatever is on the row.
+        pendingAvatarBytes   = null;
+        pendingAvatarMime    = null;
+        removeExistingAvatar = false;
+
+        Image existing = CustomerImages.loadForCustomer(c.getId(), 144, 144);
+        if (existing != null) {
+            showAvatarImage(existing, "PNG / JPG, up to 2 MB");
+        } else {
+            showAvatarPlaceholder("PNG / JPG, up to 2 MB");
+        }
     }
 
     private void bindPasswordSync(PasswordField hidden, TextField shown) {
@@ -101,6 +143,18 @@ public class CustomerSettingsController {
                 phone.isBlank() ? null : phone, c.isActive());
         if (!ok) { showProfileError("Could not save profile. Try again."); return; }
 
+        // Apply any avatar change in the same save.
+        if (removeExistingAvatar) {
+            CustomerDAO.clearAvatar(c.getId());
+            CustomerImages.invalidate(c.getId());
+        } else if (pendingAvatarBytes != null) {
+            CustomerDAO.setAvatar(c.getId(), pendingAvatarBytes, pendingAvatarMime);
+            CustomerImages.invalidate(c.getId());
+        }
+        pendingAvatarBytes   = null;
+        pendingAvatarMime    = null;
+        removeExistingAvatar = false;
+
         c.setFullName(fullName);
         c.setEmail(email);
         c.setPhone(phone.isBlank() ? null : phone);
@@ -117,6 +171,95 @@ public class CustomerSettingsController {
         Customer c = Session.getCurrentCustomer();
         if (c != null) loadCustomer(c);
         clearProfileMessage();
+    }
+
+    // ─── Avatar picker ────────────────────────────────────────────────────────
+    @FXML
+    private void handleChooseAvatar() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Choose profile photo");
+        chooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image files", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp"),
+                new FileChooser.ExtensionFilter("All files", "*.*"));
+
+        Node owner = avatarFrame == null ? profileNameLabel : avatarFrame;
+        File file = chooser.showOpenDialog(owner.getScene() == null ? null : owner.getScene().getWindow());
+        if (file == null) return;
+
+        if (file.length() > MAX_AVATAR_BYTES) {
+            showAvatarError("File is too large (" + formatBytes(file.length())
+                    + "). Max " + formatBytes(MAX_AVATAR_BYTES) + ".");
+            return;
+        }
+
+        byte[] bytes;
+        try {
+            bytes = Files.readAllBytes(Path.of(file.toURI()));
+        } catch (IOException ex) {
+            showAvatarError("Couldn't read file: " + ex.getMessage());
+            return;
+        }
+
+        Image preview = CustomerImages.fromBytes(bytes, 144, 144);
+        if (preview == null) {
+            showAvatarError("Not a valid image file.");
+            return;
+        }
+
+        this.pendingAvatarBytes   = bytes;
+        this.pendingAvatarMime    = guessMime(file.getName());
+        this.removeExistingAvatar = false;
+
+        showAvatarImage(preview, file.getName() + " (" + formatBytes(bytes.length) + ") — save to apply");
+    }
+
+    @FXML
+    private void handleRemoveAvatar() {
+        this.pendingAvatarBytes   = null;
+        this.pendingAvatarMime    = null;
+        this.removeExistingAvatar = true;
+        showAvatarPlaceholder("Photo will be removed when you save.");
+    }
+
+    private void showAvatarImage(Image img, String status) {
+        avatarImage.setImage(img);
+        avatarImage.setVisible(true);
+        avatarImage.setManaged(true);
+        avatarPlaceholder.setVisible(false);
+        avatarPlaceholder.setManaged(false);
+        setAvatarStatus(status, false);
+    }
+
+    private void showAvatarPlaceholder(String status) {
+        avatarImage.setImage(null);
+        avatarImage.setVisible(false);
+        avatarImage.setManaged(false);
+        avatarPlaceholder.setVisible(true);
+        avatarPlaceholder.setManaged(true);
+        setAvatarStatus(status, false);
+    }
+
+    private void showAvatarError(String msg) { setAvatarStatus(msg, true); }
+
+    private void setAvatarStatus(String msg, boolean isError) {
+        avatarStatusLabel.setText(msg);
+        avatarStatusLabel.getStyleClass().removeAll("form-help", "form-message-error");
+        avatarStatusLabel.getStyleClass().add(isError ? "form-message-error" : "form-help");
+    }
+
+    private static String guessMime(String fileName) {
+        String n = fileName.toLowerCase();
+        if (n.endsWith(".png"))  return "image/png";
+        if (n.endsWith(".jpg") || n.endsWith(".jpeg")) return "image/jpeg";
+        if (n.endsWith(".gif"))  return "image/gif";
+        if (n.endsWith(".webp")) return "image/webp";
+        return "application/octet-stream";
+    }
+
+    private static String formatBytes(long n) {
+        if (n < 1024) return n + " B";
+        if (n < 1024 * 1024) return String.format("%.1f KB", n / 1024.0);
+        return String.format("%.2f MB", n / (1024.0 * 1024.0));
     }
 
     // ─── Password actions ─────────────────────────────────────────────────────
